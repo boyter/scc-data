@@ -141,6 +141,26 @@ func getByteCount(summary []LanguageSummary) int64 {
 	return x
 }
 
+func getLineDistributionPerProject(summary []LanguageSummary, lineDistributionPerProject map[int64]int64) {
+	for _, y := range summary {
+		lineDistributionPerProject[y.Lines] = lineDistributionPerProject[y.Lines] + 1
+	}
+}
+
+func getLineDistributionPerProjectPerLanguage(summary []LanguageSummary, lineDistributionPerProject map[string]map[int64]int64) {
+	//for _, y := range summary {
+	//	//lineDistributionPerProject[y.Lines] = lineDistributionPerProject[y.Lines] + 1
+	//}
+}
+
+func getLineDistributionPerFile(summary []LanguageSummary, lineDistributionPerFile map[int64]int64) {
+	for _, y := range summary {
+		for _, x := range y.Files {
+			lineDistributionPerFile[x.Lines] = lineDistributionPerFile[x.Lines] + 1
+		}
+	}
+}
+
 func main() {
 	queue := make(chan File, 1000)
 	_ = getFiles("./json/", queue)
@@ -154,6 +174,11 @@ func main() {
 	var fileCount int64
 	var byteCount int64
 
+	lineDistributionPerProject := map[int64]int64{}
+	lineDistributionPerFile := map[int64]int64{}
+	lineDistributionPerProjectPerLanguage := map[string]map[int64]int64{}
+	//lineDistributionPerFilePerLanguage := map[string]map[int64]int64{}
+
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
 
@@ -166,6 +191,10 @@ func main() {
 			complexityCount += getComplexityCount(summary)
 			fileCount += int64(len(summary))
 			byteCount += getByteCount(summary)
+			getLineDistributionPerProject(summary, lineDistributionPerProject)
+			getLineDistributionPerFile(summary, lineDistributionPerFile)
+
+			getLineDistributionPerProjectPerLanguage(summary, lineDistributionPerProjectPerLanguage)
 		}
 	}
 
@@ -177,13 +206,6 @@ func main() {
 	fmt.Println("ComplexityCount", complexityCount)
 	fmt.Println("FileCount      ", fileCount)
 	fmt.Println("ByteCount      ", byteCount)
-
+	fmt.Println(lineDistributionPerProject)
+	fmt.Println(lineDistributionPerFile)
 }
-
-// Number of projects
-// Total lines
-// Total code
-// Total comments
-// Total blank
-// Total number of files processed
-// Total number of bytes
