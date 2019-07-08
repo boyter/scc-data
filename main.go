@@ -147,10 +147,19 @@ func getLineDistributionPerProject(summary []LanguageSummary, lineDistributionPe
 	}
 }
 
-func getLineDistributionPerProjectPerLanguage(summary []LanguageSummary, lineDistributionPerProject map[string]map[int64]int64) {
-	//for _, y := range summary {
-	//	//lineDistributionPerProject[y.Lines] = lineDistributionPerProject[y.Lines] + 1
-	//}
+func getLineDistributionPerLanguage(summary []LanguageSummary, lineDistributionPerProject map[string]map[int64]int64) {
+	for _, y := range summary {
+
+		_, ok := lineDistributionPerProject[y.Name]
+
+		if ok {
+			//lineDistributionPerProject[y.Name] = lineDistributionPerProject[y.Name][y.Lines]
+		} else {
+
+		}
+
+		//lineDistributionPerProject[y.Lines] = lineDistributionPerProject[y.Lines] + 1
+	}
 }
 
 func getLineDistributionPerFile(summary []LanguageSummary, lineDistributionPerFile map[int64]int64) {
@@ -176,8 +185,7 @@ func main() {
 
 	lineDistributionPerProject := map[int64]int64{}
 	lineDistributionPerFile := map[int64]int64{}
-	lineDistributionPerProjectPerLanguage := map[string]map[int64]int64{}
-	//lineDistributionPerFilePerLanguage := map[string]map[int64]int64{}
+	lineDistributionPerLanguage := map[string]map[int64]int64{}
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
@@ -193,8 +201,7 @@ func main() {
 			byteCount += getByteCount(summary)
 			getLineDistributionPerProject(summary, lineDistributionPerProject)
 			getLineDistributionPerFile(summary, lineDistributionPerFile)
-
-			getLineDistributionPerProjectPerLanguage(summary, lineDistributionPerProjectPerLanguage)
+			getLineDistributionPerLanguage(summary, lineDistributionPerLanguage)
 		}
 	}
 
