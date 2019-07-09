@@ -149,16 +149,17 @@ func getLineDistributionPerProject(summary []LanguageSummary, lineDistributionPe
 
 func getLineDistributionPerLanguage(summary []LanguageSummary, lineDistributionPerProject map[string]map[int64]int64) {
 	for _, y := range summary {
-
 		_, ok := lineDistributionPerProject[y.Name]
 
 		if ok {
-			//lineDistributionPerProject[y.Name] = lineDistributionPerProject[y.Name][y.Lines]
+			m := lineDistributionPerProject[y.Name]
+			m[y.Lines] = m[y.Lines] + 1
+			lineDistributionPerProject[y.Name] = m
 		} else {
-
+			m := map[int64]int64{}
+			m[y.Lines] = 1
+			lineDistributionPerProject[y.Name] = m
 		}
-
-		//lineDistributionPerProject[y.Lines] = lineDistributionPerProject[y.Lines] + 1
 	}
 }
 
@@ -199,6 +200,7 @@ func main() {
 			complexityCount += getComplexityCount(summary)
 			fileCount += int64(len(summary))
 			byteCount += getByteCount(summary)
+
 			getLineDistributionPerProject(summary, lineDistributionPerProject)
 			getLineDistributionPerFile(summary, lineDistributionPerFile)
 			getLineDistributionPerLanguage(summary, lineDistributionPerLanguage)
@@ -213,6 +215,11 @@ func main() {
 	fmt.Println("ComplexityCount", complexityCount)
 	fmt.Println("FileCount      ", fileCount)
 	fmt.Println("ByteCount      ", byteCount)
+
 	fmt.Println(lineDistributionPerProject)
 	fmt.Println(lineDistributionPerFile)
+
+	for x, y := range lineDistributionPerLanguage {
+		fmt.Println(x, y)
+	}
 }
