@@ -125,3 +125,35 @@ func getComplexityDistributionPerFile(summary []LanguageSummary, x map[int64]int
 		}
 	}
 }
+
+///////////////////////////////////
+
+func getBlankDistributionPerProject(summary []LanguageSummary, x map[int64]int64) {
+	for _, y := range summary {
+		x[y.Blank] = x[y.Blank] + 1
+	}
+}
+
+func getBlankDistributionPerLanguage(summary []LanguageSummary, x map[string]map[int64]int64) {
+	for _, y := range summary {
+		_, ok := x[y.Name]
+
+		if ok {
+			m := x[y.Name]
+			m[y.Blank] = m[y.Blank] + 1
+			x[y.Name] = m
+		} else {
+			m := map[int64]int64{}
+			m[y.Blank] = 1
+			x[y.Name] = m
+		}
+	}
+}
+
+func getBlankDistributionPerFile(summary []LanguageSummary, x map[int64]int64) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			x[z.Blank] = x[z.Blank] + 1
+		}
+	}
+}

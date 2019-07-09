@@ -168,6 +168,10 @@ func main() {
 	commentDistributionPerFile := map[int64]int64{}
 	commentDistributionPerLanguage := map[string]map[int64]int64{}
 
+	blankDistributionPerProject := map[int64]int64{}
+	blankDistributionPerFile := map[int64]int64{}
+	blankDistributionPerLanguage := map[string]map[int64]int64{}
+
 	complexityDistributionPerProject := map[int64]int64{}
 	complexityDistributionPerFile := map[int64]int64{}
 	complexityDistributionPerLanguage := map[string]map[int64]int64{}
@@ -197,6 +201,10 @@ func main() {
 			getCommentDistributionPerProject(summary, commentDistributionPerProject)
 			getCommentDistributionPerFile(summary, commentDistributionPerFile)
 			getCommentDistributionPerLanguage(summary, commentDistributionPerLanguage)
+
+			getBlankDistributionPerProject(summary, blankDistributionPerProject)
+			getBlankDistributionPerFile(summary, blankDistributionPerFile)
+			getBlankDistributionPerLanguage(summary, blankDistributionPerLanguage)
 
 			getComplexityDistributionPerProject(summary, complexityDistributionPerProject)
 			getComplexityDistributionPerFile(summary, complexityDistributionPerFile)
@@ -228,6 +236,12 @@ func main() {
 	fmt.Println(commentDistributionPerProject)
 	fmt.Println(commentDistributionPerFile)
 	for x, y := range commentDistributionPerLanguage {
+		fmt.Println(x, y)
+	}
+
+	fmt.Println(blankDistributionPerProject)
+	fmt.Println(blankDistributionPerFile)
+	for x, y := range blankDistributionPerLanguage {
 		fmt.Println(x, y)
 	}
 
