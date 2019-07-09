@@ -141,35 +141,7 @@ func getByteCount(summary []LanguageSummary) int64 {
 	return x
 }
 
-func getLineDistributionPerProject(summary []LanguageSummary, lineDistributionPerProject map[int64]int64) {
-	for _, y := range summary {
-		lineDistributionPerProject[y.Lines] = lineDistributionPerProject[y.Lines] + 1
-	}
-}
 
-func getLineDistributionPerLanguage(summary []LanguageSummary, lineDistributionPerProject map[string]map[int64]int64) {
-	for _, y := range summary {
-		_, ok := lineDistributionPerProject[y.Name]
-
-		if ok {
-			m := lineDistributionPerProject[y.Name]
-			m[y.Lines] = m[y.Lines] + 1
-			lineDistributionPerProject[y.Name] = m
-		} else {
-			m := map[int64]int64{}
-			m[y.Lines] = 1
-			lineDistributionPerProject[y.Name] = m
-		}
-	}
-}
-
-func getLineDistributionPerFile(summary []LanguageSummary, lineDistributionPerFile map[int64]int64) {
-	for _, y := range summary {
-		for _, x := range y.Files {
-			lineDistributionPerFile[x.Lines] = lineDistributionPerFile[x.Lines] + 1
-		}
-	}
-}
 
 func main() {
 	queue := make(chan File, 1000)
@@ -188,6 +160,19 @@ func main() {
 	lineDistributionPerFile := map[int64]int64{}
 	lineDistributionPerLanguage := map[string]map[int64]int64{}
 
+	codeDistributionPerProject := map[int64]int64{}
+	codeDistributionPerFile := map[int64]int64{}
+	codeDistributionPerLanguage := map[string]map[int64]int64{}
+
+	commentDistributionPerProject := map[int64]int64{}
+	commentDistributionPerFile := map[int64]int64{}
+	commentDistributionPerLanguage := map[string]map[int64]int64{}
+
+	complexityDistributionPerProject := map[int64]int64{}
+	complexityDistributionPerFile := map[int64]int64{}
+	complexityDistributionPerLanguage := map[string]map[int64]int64{}
+
+
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
 
@@ -204,6 +189,18 @@ func main() {
 			getLineDistributionPerProject(summary, lineDistributionPerProject)
 			getLineDistributionPerFile(summary, lineDistributionPerFile)
 			getLineDistributionPerLanguage(summary, lineDistributionPerLanguage)
+
+			getCodeDistributionPerProject(summary, codeDistributionPerProject)
+			getCodeDistributionPerFile(summary, codeDistributionPerFile)
+			getCodeDistributionPerLanguage(summary, codeDistributionPerLanguage)
+
+			getCommentDistributionPerProject(summary, commentDistributionPerProject)
+			getCommentDistributionPerFile(summary, commentDistributionPerFile)
+			getCommentDistributionPerLanguage(summary, commentDistributionPerLanguage)
+
+			getComplexityDistributionPerProject(summary, complexityDistributionPerProject)
+			getComplexityDistributionPerFile(summary, complexityDistributionPerFile)
+			getComplexityDistributionPerLanguage(summary, complexityDistributionPerLanguage)
 		}
 	}
 
@@ -218,8 +215,25 @@ func main() {
 
 	fmt.Println(lineDistributionPerProject)
 	fmt.Println(lineDistributionPerFile)
-
 	for x, y := range lineDistributionPerLanguage {
+		fmt.Println(x, y)
+	}
+
+	fmt.Println(codeDistributionPerProject)
+	fmt.Println(codeDistributionPerFile)
+	for x, y := range codeDistributionPerLanguage {
+		fmt.Println(x, y)
+	}
+
+	fmt.Println(commentDistributionPerProject)
+	fmt.Println(commentDistributionPerFile)
+	for x, y := range commentDistributionPerLanguage {
+		fmt.Println(x, y)
+	}
+
+	fmt.Println(complexityDistributionPerProject)
+	fmt.Println(complexityDistributionPerFile)
+	for x, y := range complexityDistributionPerLanguage {
 		fmt.Println(x, y)
 	}
 }
