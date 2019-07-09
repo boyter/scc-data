@@ -172,7 +172,7 @@ func getLineDistributionPerFile(summary []LanguageSummary, lineDistributionPerFi
 
 func main() {
 	queue := make(chan File, 1000)
-	_ = getFiles("./json/", queue)
+	go getFiles("./json/", queue)
 
 	var projectCount int64
 	var lineCount int64
