@@ -225,6 +225,9 @@ func main() {
 	fmt.Println("FileCount      ", fileCount)
 	fmt.Println("ByteCount      ", byteCount)
 
+	stats := fmt.Sprintf("ProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d", projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount)
+	_ = ioutil.WriteFile("totalStats.txt", []byte(stats), 0600)
+
 	v, _ := json.Marshal(lineDistributionPerProject)
 	_ = ioutil.WriteFile("lineDistributionPerProject.json", []byte(v), 0600)
 	v, _ = json.Marshal(lineDistributionPerFile)
