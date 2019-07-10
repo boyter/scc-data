@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"time"
 )
 
 type FileJob struct {
@@ -141,9 +142,12 @@ func getByteCount(summary []LanguageSummary) int64 {
 	return x
 }
 
-
+func makeTimestampSeconds() int64 {
+	return time.Now().UnixNano() / int64(time.Second)
+}
 
 func main() {
+	startTime := makeTimestampSeconds()
 	queue := make(chan File, 1000)
 	go getFiles("./json/", queue)
 
@@ -216,6 +220,8 @@ func main() {
 		}
 	}
 
+	endTime := makeTimestampSeconds()
+
 	fmt.Println("ProjectCount   ", projectCount)
 	fmt.Println("LineCount      ", lineCount)
 	fmt.Println("CodeCount      ", codeCount)
@@ -224,8 +230,11 @@ func main() {
 	fmt.Println("ComplexityCount", complexityCount)
 	fmt.Println("FileCount      ", fileCount)
 	fmt.Println("ByteCount      ", byteCount)
+	fmt.Println("StartTime      ", startTime)
+	fmt.Println("EndTime        ", endTime)
+	fmt.Println("TotalTime(s)   ", endTime - startTime)
 
-	stats := fmt.Sprintf("ProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d", projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount)
+	stats := fmt.Sprintf("ProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d\nTotalTime(s) %d", projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount, endTime - startTime)
 	_ = ioutil.WriteFile("totalStats.txt", []byte(stats), 0600)
 
 	v, _ := json.Marshal(lineDistributionPerProject)
