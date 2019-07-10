@@ -225,35 +225,41 @@ func main() {
 	fmt.Println("FileCount      ", fileCount)
 	fmt.Println("ByteCount      ", byteCount)
 
-	fmt.Println(lineDistributionPerProject)
-	fmt.Println(lineDistributionPerFile)
-	for x, y := range lineDistributionPerLanguage {
-		fmt.Println(x, y)
-	}
+	v, _ := json.Marshal(lineDistributionPerProject)
+	_ = ioutil.WriteFile("lineDistributionPerProject.json", []byte(v), 0600)
+	v, _ = json.Marshal(lineDistributionPerFile)
+	_ = ioutil.WriteFile("lineDistributionPerFile.json", []byte(v), 0600)
+	v, _ = json.Marshal(lineDistributionPerLanguage)
+	_ = ioutil.WriteFile("lineDistributionPerLanguage.json", []byte(v), 0600)
 
-	fmt.Println(codeDistributionPerProject)
-	fmt.Println(codeDistributionPerFile)
-	for x, y := range codeDistributionPerLanguage {
-		fmt.Println(x, y)
-	}
+	v, _ = json.Marshal(codeDistributionPerProject)
+	_ = ioutil.WriteFile("codeDistributionPerProject.json", []byte(v), 0600)
+	v, _ = json.Marshal(codeDistributionPerFile)
+	_ = ioutil.WriteFile("codeDistributionPerFile.json", []byte(v), 0600)
+	v, _ = json.Marshal(codeDistributionPerLanguage)
+	_ = ioutil.WriteFile("codeDistributionPerLanguage.json", []byte(v), 0600)
 
-	fmt.Println(commentDistributionPerProject)
-	fmt.Println(commentDistributionPerFile)
-	for x, y := range commentDistributionPerLanguage {
-		fmt.Println(x, y)
-	}
+	v, _ = json.Marshal(commentDistributionPerProject)
+	_ = ioutil.WriteFile("commentDistributionPerProject.json", []byte(v), 0600)
+	v, _ = json.Marshal(commentDistributionPerFile)
+	_ = ioutil.WriteFile("commentDistributionPerFile.json", []byte(v), 0600)
+	v, _ = json.Marshal(commentDistributionPerLanguage)
+	_ = ioutil.WriteFile("commentDistributionPerLanguage.json", []byte(v), 0600)
 
-	fmt.Println(blankDistributionPerProject)
-	fmt.Println(blankDistributionPerFile)
-	for x, y := range blankDistributionPerLanguage {
-		fmt.Println(x, y)
-	}
+	v, _ = json.Marshal(blankDistributionPerProject)
+	_ = ioutil.WriteFile("blankDistributionPerProject.json", []byte(v), 0600)
+	v, _ = json.Marshal(blankDistributionPerFile)
+	_ = ioutil.WriteFile("blankDistributionPerFile.json", []byte(v), 0600)
+	v, _ = json.Marshal(blankDistributionPerLanguage)
+	_ = ioutil.WriteFile("blankDistributionPerLanguage.json", []byte(v), 0600)
 
-	fmt.Println(complexityDistributionPerProject)
-	fmt.Println(complexityDistributionPerFile)
-	for x, y := range complexityDistributionPerLanguage {
-		fmt.Println(x, y)
-	}
+	v, _ = json.Marshal(complexityDistributionPerProject)
+	_ = ioutil.WriteFile("complexityDistributionPerProject.json", []byte(v), 0600)
+	v, _ = json.Marshal(complexityDistributionPerFile)
+	_ = ioutil.WriteFile("complexityDistributionPerFile.json", []byte(v), 0600)
+	v, _ = json.Marshal(complexityDistributionPerLanguage)
+	_ = ioutil.WriteFile("complexityDistributionPerLanguage.json", []byte(v), 0600)
 
-	fmt.Println(filesPerProject)
+	v, _ = json.Marshal(filesPerProject)
+	_ = ioutil.WriteFile("filesPerProject.json", []byte(v), 0600)
 }
