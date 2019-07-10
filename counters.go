@@ -157,3 +157,14 @@ func getBlankDistributionPerFile(summary []LanguageSummary, x map[int64]int64) {
 		}
 	}
 }
+
+////////////////////////
+
+func getFilesPerProject(summary []LanguageSummary, x map[int64]int64) {
+	var c int64
+	for _, y := range summary {
+		c += int64(len(y.Files))
+	}
+
+	x[c] = x[c] + 1
+}

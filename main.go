@@ -176,6 +176,8 @@ func main() {
 	complexityDistributionPerFile := map[int64]int64{}
 	complexityDistributionPerLanguage := map[string]map[int64]int64{}
 
+	filesPerProject := map[int64]int64{}
+
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
@@ -209,6 +211,8 @@ func main() {
 			getComplexityDistributionPerProject(summary, complexityDistributionPerProject)
 			getComplexityDistributionPerFile(summary, complexityDistributionPerFile)
 			getComplexityDistributionPerLanguage(summary, complexityDistributionPerLanguage)
+
+			getFilesPerProject(summary, filesPerProject)
 		}
 	}
 
@@ -250,4 +254,6 @@ func main() {
 	for x, y := range complexityDistributionPerLanguage {
 		fmt.Println(x, y)
 	}
+
+	fmt.Println(filesPerProject)
 }
