@@ -171,11 +171,27 @@ func getFilesPerProject(summary []LanguageSummary, x map[int64]int64) {
 	x[c] = x[c] + 1
 }
 
+////////////////////////
+
+func getComplexityPerLanguage(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		x[y.Name] = x[y.Name] + y.Complexity
+	}
+}
+
 /////////////////////////
 
 func getProjectsPerLanguage(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
 		x[y.Name] = x[y.Name] + 1
+	}
+}
+
+/////////////////////////
+
+func getFilesPerLanguage(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		x[y.Name] = x[y.Name] + int64(len(y.Files))
 	}
 }
 

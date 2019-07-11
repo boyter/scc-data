@@ -193,11 +193,13 @@ func main() {
 
 	filesPerProject := map[int64]int64{}
 	projectsPerLanguage := map[string]int64{}
+	filesPerLanguage := map[string]int64{}
 	hasLicenceCount := map[string]int64{}
 
 	fileNamesCount := map[string]int64{}
 	fileNamesNoExtensionCount := map[string]int64{}
 	fileNamesNoExtensionLowercaseCount := map[string]int64{}
+	complexityPerLanguage := map[string]int64{}
 
 
 	for file := range queue {
@@ -238,10 +240,13 @@ func main() {
 			getComplexityDistributionPerProject(summary, complexityDistributionPerProject)
 			getComplexityDistributionPerFile(summary, complexityDistributionPerFile)
 			getComplexityDistributionPerLanguage(summary, complexityDistributionPerLanguage)
-
+			
 			getFilesPerProject(summary, filesPerProject)
-			getProjectsPerLanguage(summary, projectsPerLanguage)
 			getLicencePerProject(summary, hasLicenceCount)
+
+			getComplexityPerLanguage(summary, complexityPerLanguage)
+			getFilesPerLanguage(summary, filesPerLanguage)
+			getProjectsPerLanguage(summary, projectsPerLanguage)
 
 			// NB this might be too large and need to purge certain names over time
 			getFileNamesCount(summary, fileNamesCount)
@@ -320,4 +325,10 @@ func main() {
 
 	v, _ = json.Marshal(fileNamesNoExtensionLowercaseCount)
 	_ = ioutil.WriteFile("./results/fileNamesNoExtensionLowercaseCount.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(complexityPerLanguage)
+	_ = ioutil.WriteFile("./results/complexityPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(filesPerLanguage)
+	_ = ioutil.WriteFile("./results/filesPerLanguage.json", []byte(v), 0600)
 }
