@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 func getLineDistributionPerProject(summary []LanguageSummary, x map[int64]int64) {
 	for _, y := range summary {
 		x[y.Lines] = x[y.Lines] + 1
@@ -192,5 +194,46 @@ func getLicencePerProject(summary []LanguageSummary, x map[string]int64) {
 		x["Yes"] = x["Yes"] + 1
 	} else {
 		x["No"] = x["No"] + 1
+	}
+}
+
+/////////////////////////
+
+func getFileNamesCount(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			x[z.Filename] = x[z.Filename] + 1
+		}
+	}
+}
+
+func getFileNamesNoExtensionCount(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+
+			l := strings.IndexAny(z.Filename, ".")
+
+			if l == -1 {
+				x[z.Filename] = x[z.Filename] + 1
+			} else {
+				x[z.Filename[:l]] = x[z.Filename[:l]] + 1
+			}
+		}
+	}
+}
+
+func getFileNamesNoExtensionLowercaseCount(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+
+			n := strings.ToLower(z.Filename)
+			l := strings.IndexAny(n, ".")
+
+			if l == -1 {
+				x[n] = x[n] + 1
+			} else {
+				x[n[:l]] = x[n[:l]] + 1
+			}
+		}
 	}
 }

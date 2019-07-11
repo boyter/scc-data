@@ -195,6 +195,10 @@ func main() {
 	projectsPerLanguage := map[string]int64{}
 	hasLicenceCount := map[string]int64{}
 
+	fileNamesCount := map[string]int64{}
+	fileNamesNoExtensionCount := map[string]int64{}
+	fileNamesNoExtensionLowercaseCount := map[string]int64{}
+
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
@@ -238,6 +242,11 @@ func main() {
 			getFilesPerProject(summary, filesPerProject)
 			getProjectsPerLanguage(summary, projectsPerLanguage)
 			getLicencePerProject(summary, hasLicenceCount)
+
+			// NB this might be too large and need to purge certain names over time
+			getFileNamesCount(summary, fileNamesCount)
+			getFileNamesNoExtensionCount(summary, fileNamesNoExtensionCount)
+			getFileNamesNoExtensionLowercaseCount(summary, fileNamesNoExtensionLowercaseCount)
 		}
 	}
 
@@ -302,4 +311,13 @@ func main() {
 
 	v, _ = json.Marshal(hasLicenceCount)
 	_ = ioutil.WriteFile("./results/hasLicenceCount.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(fileNamesCount)
+	_ = ioutil.WriteFile("./results/fileNamesCount.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(fileNamesNoExtensionCount)
+	_ = ioutil.WriteFile("./results/fileNamesNoExtensionCount.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(fileNamesNoExtensionLowercaseCount)
+	_ = ioutil.WriteFile("./results/fileNamesNoExtensionLowercaseCount.json", []byte(v), 0600)
 }
