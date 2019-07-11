@@ -80,6 +80,16 @@ func unmarshallContent(content []byte) ([]LanguageSummary, error) {
 	return summary, nil
 }
 
+func getFileCount(summary []LanguageSummary) int64 {
+	var x int64
+
+	for _, y := range summary {
+		x += int64(len(y.Files))
+	}
+
+	return x
+}
+
 func getLineCount(summary []LanguageSummary) int64 {
 	var x int64
 
@@ -159,6 +169,7 @@ func main() {
 	var complexityCount int64
 	var fileCount int64
 	var byteCount int64
+	var noFiles int64
 
 	lineDistributionPerProject := map[int64]int64{}
 	lineDistributionPerFile := map[int64]int64{}
@@ -181,12 +192,20 @@ func main() {
 	complexityDistributionPerLanguage := map[string]map[int64]int64{}
 
 	filesPerProject := map[int64]int64{}
+	projectsPerLanguage := map[string]int64{}
+	hasLicenceCount := map[string]int64{}
 
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
 
-		if err == nil {
+		// If no files we should exclude but count that
+		cnt := getFileCount(summary)
+		if cnt == 0 {
+			noFiles++
+		}
+
+		if err == nil && cnt != 0 {
 			projectCount++
 			lineCount += getLineCount(summary)
 			codeCount += getCodeCount(summary)
@@ -217,11 +236,14 @@ func main() {
 			getComplexityDistributionPerLanguage(summary, complexityDistributionPerLanguage)
 
 			getFilesPerProject(summary, filesPerProject)
+			getProjectsPerLanguage(summary, projectsPerLanguage)
+			getLicencePerProject(summary, hasLicenceCount)
 		}
 	}
 
 	endTime := makeTimestampSeconds()
 
+	fmt.Println("NoFiles        ", noFiles)
 	fmt.Println("ProjectCount   ", projectCount)
 	fmt.Println("LineCount      ", lineCount)
 	fmt.Println("CodeCount      ", codeCount)
@@ -234,44 +256,50 @@ func main() {
 	fmt.Println("EndTime        ", endTime)
 	fmt.Println("TotalTime(s)   ", endTime - startTime)
 
-	stats := fmt.Sprintf("ProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d\nTotalTime(s) %d", projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount, endTime - startTime)
-	_ = ioutil.WriteFile("totalStats.txt", []byte(stats), 0600)
+	stats := fmt.Sprintf("NoFiles %d\nProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d\nTotalTime(s) %d", noFiles, projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount, endTime - startTime)
+	_ = ioutil.WriteFile("./results/totalStats.txt", []byte(stats), 0600)
 
 	v, _ := json.Marshal(lineDistributionPerProject)
-	_ = ioutil.WriteFile("lineDistributionPerProject.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/lineDistributionPerProject.json", []byte(v), 0600)
 	v, _ = json.Marshal(lineDistributionPerFile)
-	_ = ioutil.WriteFile("lineDistributionPerFile.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/lineDistributionPerFile.json", []byte(v), 0600)
 	v, _ = json.Marshal(lineDistributionPerLanguage)
-	_ = ioutil.WriteFile("lineDistributionPerLanguage.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/lineDistributionPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(codeDistributionPerProject)
-	_ = ioutil.WriteFile("codeDistributionPerProject.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/codeDistributionPerProject.json", []byte(v), 0600)
 	v, _ = json.Marshal(codeDistributionPerFile)
-	_ = ioutil.WriteFile("codeDistributionPerFile.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/codeDistributionPerFile.json", []byte(v), 0600)
 	v, _ = json.Marshal(codeDistributionPerLanguage)
-	_ = ioutil.WriteFile("codeDistributionPerLanguage.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/codeDistributionPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(commentDistributionPerProject)
-	_ = ioutil.WriteFile("commentDistributionPerProject.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/commentDistributionPerProject.json", []byte(v), 0600)
 	v, _ = json.Marshal(commentDistributionPerFile)
-	_ = ioutil.WriteFile("commentDistributionPerFile.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/commentDistributionPerFile.json", []byte(v), 0600)
 	v, _ = json.Marshal(commentDistributionPerLanguage)
-	_ = ioutil.WriteFile("commentDistributionPerLanguage.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/commentDistributionPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(blankDistributionPerProject)
-	_ = ioutil.WriteFile("blankDistributionPerProject.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/blankDistributionPerProject.json", []byte(v), 0600)
 	v, _ = json.Marshal(blankDistributionPerFile)
-	_ = ioutil.WriteFile("blankDistributionPerFile.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/blankDistributionPerFile.json", []byte(v), 0600)
 	v, _ = json.Marshal(blankDistributionPerLanguage)
-	_ = ioutil.WriteFile("blankDistributionPerLanguage.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/blankDistributionPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(complexityDistributionPerProject)
-	_ = ioutil.WriteFile("complexityDistributionPerProject.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/complexityDistributionPerProject.json", []byte(v), 0600)
 	v, _ = json.Marshal(complexityDistributionPerFile)
-	_ = ioutil.WriteFile("complexityDistributionPerFile.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/complexityDistributionPerFile.json", []byte(v), 0600)
 	v, _ = json.Marshal(complexityDistributionPerLanguage)
-	_ = ioutil.WriteFile("complexityDistributionPerLanguage.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/complexityDistributionPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(filesPerProject)
-	_ = ioutil.WriteFile("filesPerProject.json", []byte(v), 0600)
+	_ = ioutil.WriteFile("./results/filesPerProject.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(projectsPerLanguage)
+	_ = ioutil.WriteFile("./results/projectsPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(hasLicenceCount)
+	_ = ioutil.WriteFile("./results/hasLicenceCount.json", []byte(v), 0600)
 }

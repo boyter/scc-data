@@ -9,7 +9,7 @@ def filesPerProject():
     be sorted
     '''
     data = '[]'
-    with open('filesPerProject.json', 'r') as myfile:
+    with open('./results/filesPerProject.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -27,7 +27,7 @@ def filesPerProject():
 
     new.sort(cmp)
 
-    with open("filesPerProject_converted.json", "w") as text_file:
+    with open("./results/filesPerProject_converted.json", "w") as text_file:
         text_file.write(json.dumps(new, sort_keys=True))
 
 

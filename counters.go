@@ -168,3 +168,29 @@ func getFilesPerProject(summary []LanguageSummary, x map[int64]int64) {
 
 	x[c] = x[c] + 1
 }
+
+/////////////////////////
+
+func getProjectsPerLanguage(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		x[y.Name] = x[y.Name] + 1
+	}
+}
+
+/////////////////////////
+
+func getLicencePerProject(summary []LanguageSummary, x map[string]int64) {
+	hasLicence := false
+
+	for _, y := range summary {
+		if y.Name == "License" {
+			hasLicence = true
+		}
+	}
+
+	if hasLicence {
+		x["Yes"] = x["Yes"] + 1
+	} else {
+		x["No"] = x["No"] + 1
+	}
+}
