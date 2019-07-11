@@ -171,36 +171,40 @@ func main() {
 	var byteCount int64
 	var noFiles int64
 
+	// The distributions are all buckets where things are grouped together
+	// E.G. lineDistributionPerProject counts projects by the number of lines
+	// so if the first project of 100 lines is added the map will look like 100:1
+	// and if another is added of 100 lines it will be 100:2 and then if
+	// we add a project of 50 lines it will be 100:2,50:1
+	// And so on for each of the below
+	// The exceptions are the map in maps, which add an additional spin by
+	// counting per language so the above if the languages were C# and PHP would
+	// be C# [100:1], PHP [100:1,50:1]
 	lineDistributionPerProject := map[int64]int64{}
 	lineDistributionPerFile := map[int64]int64{}
 	lineDistributionPerLanguage := map[string]map[int64]int64{}
-
 	codeDistributionPerProject := map[int64]int64{}
 	codeDistributionPerFile := map[int64]int64{}
 	codeDistributionPerLanguage := map[string]map[int64]int64{}
-
 	commentDistributionPerProject := map[int64]int64{}
 	commentDistributionPerFile := map[int64]int64{}
 	commentDistributionPerLanguage := map[string]map[int64]int64{}
-
 	blankDistributionPerProject := map[int64]int64{}
 	blankDistributionPerFile := map[int64]int64{}
 	blankDistributionPerLanguage := map[string]map[int64]int64{}
-
 	complexityDistributionPerProject := map[int64]int64{}
 	complexityDistributionPerFile := map[int64]int64{}
 	complexityDistributionPerLanguage := map[string]map[int64]int64{}
 
-	filesPerProject := map[int64]int64{}
-	projectsPerLanguage := map[string]int64{}
-	filesPerLanguage := map[string]int64{}
-	hasLicenceCount := map[string]int64{}
+	filesPerProject := map[int64]int64{}      // Number of files in each project in buckets IE projects with 10 files or projects with 2
+	projectsPerLanguage := map[string]int64{} // Number of projects which use a language
+	filesPerLanguage := map[string]int64{}    // Number of files per language
+	hasLicenceCount := map[string]int64{}     // Count of if a project has a licence file or not
 
-	fileNamesCount := map[string]int64{}
-	fileNamesNoExtensionCount := map[string]int64{}
-	fileNamesNoExtensionLowercaseCount := map[string]int64{}
-	complexityPerLanguage := map[string]int64{}
-
+	fileNamesCount := map[string]int64{}                     // Count of filenames
+	fileNamesNoExtensionCount := map[string]int64{}          // Count of filenames without extensions
+	fileNamesNoExtensionLowercaseCount := map[string]int64{} // Count of filenames tolower and no extensions
+	complexityPerLanguage := map[string]int64{}              // Sum of complexity per language
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
@@ -240,7 +244,7 @@ func main() {
 			getComplexityDistributionPerProject(summary, complexityDistributionPerProject)
 			getComplexityDistributionPerFile(summary, complexityDistributionPerFile)
 			getComplexityDistributionPerLanguage(summary, complexityDistributionPerLanguage)
-			
+
 			getFilesPerProject(summary, filesPerProject)
 			getLicencePerProject(summary, hasLicenceCount)
 
@@ -268,9 +272,9 @@ func main() {
 	fmt.Println("ByteCount      ", byteCount)
 	fmt.Println("StartTime      ", startTime)
 	fmt.Println("EndTime        ", endTime)
-	fmt.Println("TotalTime(s)   ", endTime - startTime)
+	fmt.Println("TotalTime(s)   ", endTime-startTime)
 
-	stats := fmt.Sprintf("NoFiles %d\nProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d\nTotalTime(s) %d", noFiles, projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount, endTime - startTime)
+	stats := fmt.Sprintf("NoFiles %d\nProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d\nTotalTime(s) %d", noFiles, projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount, endTime-startTime)
 	_ = ioutil.WriteFile("./results/totalStats.txt", []byte(stats), 0600)
 
 	v, _ := json.Marshal(lineDistributionPerProject)

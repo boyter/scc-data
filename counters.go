@@ -189,6 +189,7 @@ func getProjectsPerLanguage(summary []LanguageSummary, x map[string]int64) {
 
 /////////////////////////
 
+// Gets the count of files per language name
 func getFilesPerLanguage(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
 		x[y.Name] = x[y.Name] + int64(len(y.Files))
@@ -229,7 +230,7 @@ func getFileNamesNoExtensionCount(summary []LanguageSummary, x map[string]int64)
 
 			l := strings.IndexAny(z.Filename, ".")
 
-			if l == -1 {
+			if l == -1 || l == 0 {
 				x[z.Filename] = x[z.Filename] + 1
 			} else {
 				x[z.Filename[:l]] = x[z.Filename[:l]] + 1
