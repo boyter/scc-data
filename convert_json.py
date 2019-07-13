@@ -1,5 +1,12 @@
+'''
+The job of this script is to convert the output of the Go job into 
+what is required to fit whatever chart libary is being used and to 
+possibly merge related sets together
+'''
+
 import json
 import os
+import operator
 
 
 def filesPerProject():
@@ -34,6 +41,7 @@ def filesPerProject():
     with open("./results/filesPerProject_converted.json", "w") as text_file:
         text_file.write(json.dumps(new, sort_keys=True))
 
+
 def projectsPerLanguage():
     '''
     Converts output so we can see the number of projects per language
@@ -63,6 +71,59 @@ def projectsPerLanguage():
         text_file.write(json.dumps(new))
 
 
+def mostCommonFileNames():
+    '''
+    Converts output so we can see the nmost common filenames
+    '''
+    data = '[]'
+    with open('./results/fileNamesNoExtensionLowercaseCount.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    d = sorted(d.items(), key=operator.itemgetter(1), reverse=True)
+
+    with open("./results/fileNamesNoExtensionLowercaseCount_converted.json", "w") as text_file:
+        text_file.write(json.dumps(d))
+
+
 if __name__ == '__main__':
     filesPerProject()
     projectsPerLanguage()
+    mostCommonFileNames()
+
+
+
+
+
+'''
+files
+java 100
+php 50
+c 150
+
+complexity
+java 300
+php 200
+c 500
+
+
+100 / 150 = 0.67
+50 / 150 = 0.34
+150 / 150 = 1
+
+
+weighted complexity
+
+
+java = 201
+php = 68
+c = 500
+'''
+
+'''
+average complexity of Java repo
+average complexity of Java repo between 1-50 files
+average complexity of Java repo between 51-100 files
+etc...
+'''

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -41,6 +42,7 @@ type LanguageSummary struct {
 }
 
 type File struct {
+	Filename        string
 	Name            string
 	Content         []byte
 	LanguageSummary LanguageSummary
@@ -60,8 +62,9 @@ func getFiles(directory string, output chan File) error {
 
 			if err == nil {
 				output <- File{
-					Name:    fileInfo.Name(),
-					Content: content,
+					Filename: fileInfo.Name(),
+					Name:     fileInfo.Name(),
+					Content:  content,
 				}
 			}
 		}
@@ -206,8 +209,21 @@ func main() {
 	fileNamesNoExtensionLowercaseCount := map[string]int64{} // Count of filenames tolower and no extensions
 	complexityPerLanguage := map[string]int64{}              // Sum of complexity per language
 
+	sourceCount := map[string]int64{} // Count of each source github/bitbucket/gitlab
+
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
+
+
+		if strings.HasPrefix(file.Name, "bitbucket") {
+			sourceCount["bitbucket"] = sourceCount["bitbucket"] + 1
+		}
+		if strings.HasPrefix(file.Name, "github") {
+			sourceCount["github"] = sourceCount["github"] + 1
+		}
+		if strings.HasPrefix(file.Name, "gitlab") {
+			sourceCount["gitlab"] = sourceCount["gitlab"] + 1
+		}
 
 		// If no files we should exclude but count that
 		cnt := getFileCount(summary)
@@ -335,4 +351,7 @@ func main() {
 
 	v, _ = json.Marshal(filesPerLanguage)
 	_ = ioutil.WriteFile("./results/filesPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(sourceCount)
+	_ = ioutil.WriteFile("./results/sourceCount.json", []byte(v), 0600)
 }
