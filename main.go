@@ -48,6 +48,19 @@ type File struct {
 	LanguageSummary LanguageSummary
 }
 
+type Largest struct {
+	Name       string
+	Location   string
+	Filename   string
+	Value      int64
+	Bytes      int64
+	Lines      int64
+	Code       int64
+	Comment    int64
+	Blank      int64
+	Complexity int64
+}
+
 // Gets from disk, but could be S3 just as easily
 func getFiles(directory string, output chan File) error {
 	all, err := ioutil.ReadDir(directory)
@@ -211,9 +224,14 @@ func main() {
 
 	sourceCount := map[string]int64{} // Count of each source github/bitbucket/gitlab
 
+	mostComplex := Largest{}                       // Holds details of the most complex file
+	mostComplexPerLanguage := map[string]Largest{} // Most complex of each file type
+
+	largest := Largest{} // Holds details of the largest file in lines
+	largestPerLanguage := map[string]Largest{}
+
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
-
 
 		if strings.HasPrefix(file.Name, "bitbucket") {
 			sourceCount["bitbucket"] = sourceCount["bitbucket"] + 1
@@ -272,6 +290,12 @@ func main() {
 			getFileNamesCount(summary, fileNamesCount)
 			getFileNamesNoExtensionCount(summary, fileNamesNoExtensionCount)
 			getFileNamesNoExtensionLowercaseCount(summary, fileNamesNoExtensionLowercaseCount)
+
+			mostComplex = getMostComplex(summary, file.Filename, mostComplex)
+			getMostComplexPerLanguage(summary, file.Filename, mostComplexPerLanguage)
+
+			largest = getLargest(summary, file.Filename, largest)
+			getLargestPerLanguage(summary, file.Filename, largestPerLanguage)
 		}
 	}
 
@@ -354,4 +378,14 @@ func main() {
 
 	v, _ = json.Marshal(sourceCount)
 	_ = ioutil.WriteFile("./results/sourceCount.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(mostComplex)
+	_ = ioutil.WriteFile("./results/mostComplex.json", []byte(v), 0600)
+	v, _ = json.Marshal(mostComplexPerLanguage)
+	_ = ioutil.WriteFile("./results/mostComplexPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(largest)
+	_ = ioutil.WriteFile("./results/largest.json", []byte(v), 0600)
+	v, _ = json.Marshal(largestPerLanguage)
+	_ = ioutil.WriteFile("./results/largestPerLanguage.json", []byte(v), 0600)
 }

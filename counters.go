@@ -254,3 +254,95 @@ func getFileNamesNoExtensionLowercaseCount(summary []LanguageSummary, x map[stri
 		}
 	}
 }
+
+//////////////
+
+func getMostComplex(summary []LanguageSummary, filename string, x Largest) Largest {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			if z.Complexity > x.Value {
+				x = Largest{
+					Value:    z.Complexity,
+					Name:     filename,
+					Location: z.Location,
+					Filename: z.Filename,
+					Blank:    z.Blank,
+					Comment:  z.Comment,
+					Code:     z.Code,
+					Lines:    z.Lines,
+					Bytes:    z.Bytes,
+				}
+			}
+		}
+	}
+
+	return x
+}
+
+func getMostComplexPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+
+			if z.Complexity > x[z.Language].Value {
+				x[z.Language] = Largest{
+					Value:    z.Complexity,
+					Name:     filename,
+					Location: z.Location,
+					Filename: z.Filename,
+					Blank:    z.Blank,
+					Comment:  z.Comment,
+					Code:     z.Code,
+					Lines:    z.Lines,
+					Bytes:    z.Bytes,
+				}
+			}
+		}
+	}
+}
+
+//////////////
+
+func getLargest(summary []LanguageSummary, filename string, x Largest) Largest {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			if z.Lines > x.Value {
+				x = Largest{
+					Value:      z.Lines,
+					Name:       filename,
+					Location:   z.Location,
+					Filename:   z.Filename,
+					Blank:      z.Blank,
+					Comment:    z.Comment,
+					Code:       z.Code,
+					Lines:      z.Lines,
+					Bytes:      z.Bytes,
+					Complexity: z.Complexity,
+				}
+			}
+		}
+	}
+
+	return x
+}
+
+func getLargestPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+
+			if z.Lines > x[z.Language].Value {
+				x[z.Language] = Largest{
+					Value:      z.Lines,
+					Name:       filename,
+					Location:   z.Location,
+					Filename:   z.Filename,
+					Blank:      z.Blank,
+					Comment:    z.Comment,
+					Code:       z.Code,
+					Lines:      z.Lines,
+					Bytes:      z.Bytes,
+					Complexity: z.Complexity,
+				}
+			}
+		}
+	}
+}
