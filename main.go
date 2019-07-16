@@ -226,10 +226,14 @@ func main() {
 
 	ymlOrYaml := map[string]int64{} // yaml or yml extension?
 
-	mostComplex := Largest{}                       // Holds details of the most complex file
-	mostComplexPerLanguage := map[string]Largest{} // Most complex of each file type
-	largest := Largest{}                           // Holds details of the largest file in lines
-	largestPerLanguage := map[string]Largest{}     // largest file per language
+	mostComplex := Largest{}                               // Holds details of the most complex file
+	mostComplexPerLanguage := map[string]Largest{}         // Most complex of each file type
+	mostComplexWeighted := Largest{}                       // Holds details of the most complex file weighted by lines NB useless because it only picks up minified files
+	mostComplexWeightedPerLanguage := map[string]Largest{} // Most complex of each file type weighted by lines
+	largest := Largest{}                                   // Holds details of the largest file in lines
+	largestPerLanguage := map[string]Largest{}             // largest file per language
+	mostCommented := Largest{}                             // Holds details of the most commented file in lines
+	mostCommentedPerLanguage := map[string]Largest{}       // most commented file per language
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
@@ -295,8 +299,14 @@ func main() {
 			mostComplex = getMostComplex(summary, file.Filename, mostComplex)
 			getMostComplexPerLanguage(summary, file.Filename, mostComplexPerLanguage)
 
+			mostComplexWeighted = getMostComplexWeighted(summary, file.Filename, mostComplexWeighted)
+			getMostComplexWeightedPerLanguage(summary, file.Filename, mostComplexWeightedPerLanguage)
+
 			largest = getLargest(summary, file.Filename, largest)
 			getLargestPerLanguage(summary, file.Filename, largestPerLanguage)
+
+			mostCommented = getMostCommented(summary, file.Filename, mostCommented)
+			getMostCommentedPerLanguage(summary, file.Filename, mostCommentedPerLanguage)
 
 			getYmlOrYaml(summary, ymlOrYaml)
 		}
@@ -386,10 +396,18 @@ func main() {
 	_ = ioutil.WriteFile("./results/mostComplex.json", []byte(v), 0600)
 	v, _ = json.Marshal(mostComplexPerLanguage)
 	_ = ioutil.WriteFile("./results/mostComplexPerLanguage.json", []byte(v), 0600)
+	v, _ = json.Marshal(mostComplexWeighted)
+	_ = ioutil.WriteFile("./results/mostComplexWeighted.json", []byte(v), 0600)
+	v, _ = json.Marshal(mostComplexWeightedPerLanguage)
+	_ = ioutil.WriteFile("./results/mostComplexWeightedPerLanguage.json", []byte(v), 0600)
 	v, _ = json.Marshal(largest)
 	_ = ioutil.WriteFile("./results/largest.json", []byte(v), 0600)
 	v, _ = json.Marshal(largestPerLanguage)
 	_ = ioutil.WriteFile("./results/largestPerLanguage.json", []byte(v), 0600)
+	v, _ = json.Marshal(mostCommented)
+	_ = ioutil.WriteFile("./results/mostCommented.json", []byte(v), 0600)
+	v, _ = json.Marshal(mostCommentedPerLanguage)
+	_ = ioutil.WriteFile("./results/mostCommentedPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(ymlOrYaml)
 	_ = ioutil.WriteFile("./results/ymlOrYaml.json", []byte(v), 0600)

@@ -304,6 +304,62 @@ func getMostComplexPerLanguage(summary []LanguageSummary, filename string, x map
 
 //////////////
 
+func getMostComplexWeighted(summary []LanguageSummary, filename string, x Largest) Largest {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			var t int64
+
+			if z.Lines != 0 {
+				t = int64(z.Complexity / z.Lines)
+			}
+
+			if t > x.Value {
+				x = Largest{
+					Value:    t,
+					Name:     filename,
+					Location: z.Location,
+					Filename: z.Filename,
+					Blank:    z.Blank,
+					Comment:  z.Comment,
+					Code:     z.Code,
+					Lines:    z.Lines,
+					Bytes:    z.Bytes,
+				}
+			}
+		}
+	}
+
+	return x
+}
+
+func getMostComplexWeightedPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			var t int64
+
+			if z.Lines != 0 {
+				t = int64(z.Complexity / z.Lines)
+			}
+
+			if t > x[z.Language].Value {
+				x[z.Language] = Largest{
+					Value:    t,
+					Name:     filename,
+					Location: z.Location,
+					Filename: z.Filename,
+					Blank:    z.Blank,
+					Comment:  z.Comment,
+					Code:     z.Code,
+					Lines:    z.Lines,
+					Bytes:    z.Bytes,
+				}
+			}
+		}
+	}
+}
+
+//////////////
+
 func getLargest(summary []LanguageSummary, filename string, x Largest) Largest {
 	for _, y := range summary {
 		for _, z := range y.Files {
@@ -334,6 +390,53 @@ func getLargestPerLanguage(summary []LanguageSummary, filename string, x map[str
 			if z.Lines > x[z.Language].Value {
 				x[z.Language] = Largest{
 					Value:      z.Lines,
+					Name:       filename,
+					Location:   z.Location,
+					Filename:   z.Filename,
+					Blank:      z.Blank,
+					Comment:    z.Comment,
+					Code:       z.Code,
+					Lines:      z.Lines,
+					Bytes:      z.Bytes,
+					Complexity: z.Complexity,
+				}
+			}
+		}
+	}
+}
+
+//////////////
+
+func getMostCommented(summary []LanguageSummary, filename string, x Largest) Largest {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			if z.Comment > x.Value {
+				x = Largest{
+					Value:      z.Comment,
+					Name:       filename,
+					Location:   z.Location,
+					Filename:   z.Filename,
+					Blank:      z.Blank,
+					Comment:    z.Comment,
+					Code:       z.Code,
+					Lines:      z.Lines,
+					Bytes:      z.Bytes,
+					Complexity: z.Complexity,
+				}
+			}
+		}
+	}
+
+	return x
+}
+
+func getMostCommentedPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+
+			if z.Comment > x[z.Language].Value {
+				x[z.Language] = Largest{
+					Value:      z.Comment,
 					Name:       filename,
 					Location:   z.Location,
 					Filename:   z.Filename,
