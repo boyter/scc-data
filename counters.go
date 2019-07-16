@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 func getLineDistributionPerProject(summary []LanguageSummary, x map[int64]int64) {
 	for _, y := range summary {
@@ -341,6 +343,25 @@ func getLargestPerLanguage(summary []LanguageSummary, filename string, x map[str
 					Lines:      z.Lines,
 					Bytes:      z.Bytes,
 					Complexity: z.Complexity,
+				}
+			}
+		}
+	}
+}
+
+///////////////
+
+func getYmlOrYaml(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		if y.Name == "YAML" {
+			for _, z := range y.Files {
+
+				if z.Extension == "yml" || strings.HasSuffix(z.Extension,".yml") {
+					x["yml"] = x["yml"] + 1
+				} else if z.Extension == "yaml" || strings.HasSuffix(z.Extension, ".yaml") {
+					x["yaml"] = x["yaml"] + 1
+				} else {
+					x["other"] = x["other"] + 1
 				}
 			}
 		}

@@ -224,11 +224,12 @@ func main() {
 
 	sourceCount := map[string]int64{} // Count of each source github/bitbucket/gitlab
 
+	ymlOrYaml := map[string]int64{} // yaml or yml extension?
+
 	mostComplex := Largest{}                       // Holds details of the most complex file
 	mostComplexPerLanguage := map[string]Largest{} // Most complex of each file type
-
-	largest := Largest{} // Holds details of the largest file in lines
-	largestPerLanguage := map[string]Largest{}
+	largest := Largest{}                           // Holds details of the largest file in lines
+	largestPerLanguage := map[string]Largest{}     // largest file per language
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
@@ -296,6 +297,8 @@ func main() {
 
 			largest = getLargest(summary, file.Filename, largest)
 			getLargestPerLanguage(summary, file.Filename, largestPerLanguage)
+
+			getYmlOrYaml(summary, ymlOrYaml)
 		}
 	}
 
@@ -383,9 +386,11 @@ func main() {
 	_ = ioutil.WriteFile("./results/mostComplex.json", []byte(v), 0600)
 	v, _ = json.Marshal(mostComplexPerLanguage)
 	_ = ioutil.WriteFile("./results/mostComplexPerLanguage.json", []byte(v), 0600)
-
 	v, _ = json.Marshal(largest)
 	_ = ioutil.WriteFile("./results/largest.json", []byte(v), 0600)
 	v, _ = json.Marshal(largestPerLanguage)
 	_ = ioutil.WriteFile("./results/largestPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(ymlOrYaml)
+	_ = ioutil.WriteFile("./results/ymlOrYaml.json", []byte(v), 0600)
 }
