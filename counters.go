@@ -581,3 +581,18 @@ func containsCurse(name string) bool {
 
 	return false
 }
+
+func getGitIgnore(summary []LanguageSummary, x map[int64]int64) {
+	hasGitignore := false
+	for _, y := range summary {
+
+		if y.Name == "gitignore" {
+			hasGitignore = true
+			x[int64(len(y.Files))] = x[int64(len(y.Files))] + 1
+		}
+	}
+
+	if !hasGitignore {
+		x[0] = x[0] + 1
+	}
+}

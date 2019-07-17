@@ -244,7 +244,7 @@ func main() {
 
 	cursingByLanguage := map[string]int64{} // Cursing names by language
 
-	//multipleGitIgnore := map[string]int64{} // See how many projects use none, single or multiple gitignore files
+	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
 
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
@@ -329,6 +329,8 @@ func main() {
 			getFactoryCount(summary, javaFactory)
 
 			getCursingByLanguage(summary, cursingByLanguage)
+
+			getGitIgnore(summary, multipleGitIgnore)
 		}
 	}
 
@@ -446,4 +448,7 @@ func main() {
 
 	v, _ = json.Marshal(cursingByLanguage)
 	_ = ioutil.WriteFile("./results/cursingByLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(multipleGitIgnore)
+	_ = ioutil.WriteFile("./results/multipleGitIgnore.json", []byte(v), 0600)
 }
