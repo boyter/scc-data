@@ -558,3 +558,26 @@ func getFactoryCount(summary []LanguageSummary, x map[string]int64) {
 		}
 	}
 }
+
+func getCursingByLanguage(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+
+		for _, z := range y.Files {
+			if containsCurse(z.Filename) {
+				x[y.Name] = x[y.Name] + 1
+			}
+		}
+	}
+}
+
+func containsCurse(name string) bool {
+	l := strings.ToLower(name)
+
+	for _, c := range curseWords {
+		if strings.HasPrefix(l, c + ".") {
+			return true
+		}
+	}
+
+	return false
+}
