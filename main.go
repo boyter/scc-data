@@ -235,6 +235,12 @@ func main() {
 	mostCommented := Largest{}                             // Holds details of the most commented file in lines
 	mostCommentedPerLanguage := map[string]Largest{}       // most commented file per language
 
+	pureProjects := map[int64]int64{}                      // Purity of projects, IE how many languages are used in a project by count
+	pureProjectsByLanguage := map[string]map[int64]int64{} // Purity by language
+
+	javaFactory := map[string]int64{} // Count of factoryfactoryfactory factoryfactory and factory
+
+
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
 
@@ -309,6 +315,11 @@ func main() {
 			getMostCommentedPerLanguage(summary, file.Filename, mostCommentedPerLanguage)
 
 			getYmlOrYaml(summary, ymlOrYaml)
+
+			getPurity(summary, pureProjects)
+			getPurityByLanguage(summary, pureProjectsByLanguage)
+
+			getFactoryCount(summary, javaFactory)
 		}
 	}
 
@@ -411,4 +422,12 @@ func main() {
 
 	v, _ = json.Marshal(ymlOrYaml)
 	_ = ioutil.WriteFile("./results/ymlOrYaml.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(pureProjects)
+	_ = ioutil.WriteFile("./results/pureProjects.json", []byte(v), 0600)
+	v, _ = json.Marshal(pureProjectsByLanguage)
+	_ = ioutil.WriteFile("./results/pureProjectsByLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(javaFactory)
+	_ = ioutil.WriteFile("./results/javaFactory.json", []byte(v), 0600)
 }

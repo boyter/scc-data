@@ -470,3 +470,43 @@ func getYmlOrYaml(summary []LanguageSummary, x map[string]int64) {
 		}
 	}
 }
+
+func getPurity(summary []LanguageSummary, x map[int64]int64) {
+	x[int64(len(summary))] = x[int64(len(summary))] + 1
+}
+
+func getPurityByLanguage(summary []LanguageSummary, x map[string]map[int64]int64) {
+	for _, y := range summary {
+		_, ok := x[y.Name]
+
+		if ok {
+			m := x[y.Name]
+			m[int64(len(summary))] = m[int64(len(summary))] + 1
+			x[y.Name] = m
+		} else {
+			m := map[int64]int64{}
+			m[int64(len(summary))] = 1
+			x[y.Name] = m
+		}
+	}
+}
+
+func getFactoryCount(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		if y.Name == "Java" {
+			for _, z := range y.Files {
+				x["count"] = x["count"] + 1
+
+				n := strings.ToLower(z.Filename)
+
+				if strings.Contains(n, "factoryfactoryfactory") {
+					x["factoryfactoryfactory"] = x["factoryfactoryfactory"] + 1
+				} else if strings.Contains(n, "factoryfactory") {
+					x["factoryfactory"] = x["factoryfactory"] + 1
+				} else if strings.Contains(n,"factory") {
+					x["factory"] = x["factory"] + 1
+				}
+			}
+		}
+	}
+}
