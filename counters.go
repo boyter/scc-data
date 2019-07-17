@@ -363,9 +363,9 @@ func getMostComplexWeightedPerLanguage(summary []LanguageSummary, filename strin
 func getLargest(summary []LanguageSummary, filename string, x Largest) Largest {
 	for _, y := range summary {
 		for _, z := range y.Files {
-			if z.Lines > x.Value {
+			if z.Bytes > x.Value {
 				x = Largest{
-					Value:      z.Lines,
+					Value:      z.Bytes,
 					Name:       filename,
 					Location:   z.Location,
 					Filename:   z.Filename,
@@ -387,9 +387,9 @@ func getLargestPerLanguage(summary []LanguageSummary, filename string, x map[str
 	for _, y := range summary {
 		for _, z := range y.Files {
 
-			if z.Lines > x[z.Language].Value {
+			if z.Bytes > x[z.Language].Value {
 				x[z.Language] = Largest{
-					Value:      z.Lines,
+					Value:      z.Bytes,
 					Name:       filename,
 					Location:   z.Location,
 					Filename:   z.Filename,
@@ -453,6 +453,54 @@ func getMostCommentedPerLanguage(summary []LanguageSummary, filename string, x m
 }
 
 ///////////////
+
+func getMostLines(summary []LanguageSummary, filename string, x Largest) Largest {
+	for _, y := range summary {
+		for _, z := range y.Files {
+			if z.Lines > x.Value {
+				x = Largest{
+					Value:      z.Lines,
+					Name:       filename,
+					Location:   z.Location,
+					Filename:   z.Filename,
+					Blank:      z.Blank,
+					Comment:    z.Comment,
+					Code:       z.Code,
+					Lines:      z.Lines,
+					Bytes:      z.Bytes,
+					Complexity: z.Complexity,
+				}
+			}
+		}
+	}
+
+	return x
+}
+
+func getMostLinesPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+	for _, y := range summary {
+		for _, z := range y.Files {
+
+			if z.Lines > x[z.Language].Value {
+				x[z.Language] = Largest{
+					Value:      z.Lines,
+					Name:       filename,
+					Location:   z.Location,
+					Filename:   z.Filename,
+					Blank:      z.Blank,
+					Comment:    z.Comment,
+					Code:       z.Code,
+					Lines:      z.Lines,
+					Bytes:      z.Bytes,
+					Complexity: z.Complexity,
+				}
+			}
+		}
+	}
+}
+
+///////////////
+
 
 func getYmlOrYaml(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {

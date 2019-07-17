@@ -26,7 +26,7 @@ def filesPerProject():
     d = json.loads(data)
 
     new = []
-    for x,y in d.iteritems():
+    for x, y in d.iteritems():
         new.append([int(x), y])
 
     def cmp(a, b):
@@ -87,10 +87,120 @@ def mostCommonFileNames():
         text_file.write(json.dumps(d))
 
 
+def largestPerLanguage():
+    '''
+    Convert the largest files per language into markdown
+    table for embedding
+    '''
+    data = '[]'
+    with open('./results/largestPerLanguage.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    new = []
+    for x, y in d.iteritems():
+        new.append([x, y])
+
+    def cmp(a, b):
+        if a[1]['Bytes'] == b[1]['Bytes']:
+            return 0
+        if a[1]['Bytes'] > b[1]['Bytes']:
+            return -1
+        return 1
+
+    new.sort(cmp)
+
+    res = [
+        '| language | filename | bytes |',
+        '| -------- | -------- | ----- |',
+    ]
+
+    for y in new:
+        x = '| %s | %s | %s |' % (y[0], y[1]['Filename'], y[1]['Bytes'])
+        res.append(x)
+
+    with open("./results/largestPerLanguage_converted.txt", "w") as text_file:
+        text_file.write('''\n'''.join(res))
+
+
+def longestPerLanguage():
+    '''
+    Convert the longest files per language into markdown
+    table for embedding
+    '''
+    data = '[]'
+    with open('./results/longestPerLanguage.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    new = []
+    for x, y in d.iteritems():
+        new.append([x, y])
+
+    def cmp(a, b):
+        if a[1]['Lines'] == b[1]['Lines']:
+            return 0
+        if a[1]['Lines'] > b[1]['Lines']:
+            return -1
+        return 1
+
+    new.sort(cmp)
+
+    res = [
+        '| language | filename | lines |',
+        '| -------- | -------- | ----- |',
+    ]
+
+    for y in new:
+        x = '| %s | %s | %s |' % (y[0], y[1]['Filename'], y[1]['Lines'])
+        res.append(x)
+
+    with open("./results/longestPerLanguage_converted.txt", "w") as text_file:
+        text_file.write('''\n'''.join(res))
+
+
+def pureProjects():
+    '''
+    Converts the output of pureProjects into something
+    we can throw into a chart library since it needs to 
+    be sorted
+    It is a count of the number of languages used by a project
+
+    EG. languages:project where 123 projects have 2 languages in them
+    https://jsfiddle.net/jqt81ufs/
+    '''
+    data = '[]'
+    with open('./results/pureProjects.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    new = []
+    for x, y in d.iteritems():
+        new.append([int(x), y])
+
+    def cmp(a, b):
+        if a == b:
+            return 0
+        if a < b:
+            return -1
+        return 1
+
+    new.sort(cmp)
+
+    with open("./results/pureProjects_converted.json", "w") as text_file:
+        text_file.write(json.dumps(new, sort_keys=True))
+
+
 if __name__ == '__main__':
     filesPerProject()
     projectsPerLanguage()
     mostCommonFileNames()
+    largestPerLanguage()
+    longestPerLanguage()
+    pureProjects()
 
 
 

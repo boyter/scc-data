@@ -230,8 +230,10 @@ func main() {
 	mostComplexPerLanguage := map[string]Largest{}         // Most complex of each file type
 	mostComplexWeighted := Largest{}                       // Holds details of the most complex file weighted by lines NB useless because it only picks up minified files
 	mostComplexWeightedPerLanguage := map[string]Largest{} // Most complex of each file type weighted by lines
-	largest := Largest{}                                   // Holds details of the largest file in lines
+	largest := Largest{}                                   // Holds details of the largest file in bytes
 	largestPerLanguage := map[string]Largest{}             // largest file per language
+	longest := Largest{}                                   // Holds details of the longest file in lines
+	longestPerLanguage := map[string]Largest{}             // longest file per language
 	mostCommented := Largest{}                             // Holds details of the most commented file in lines
 	mostCommentedPerLanguage := map[string]Largest{}       // most commented file per language
 
@@ -310,6 +312,8 @@ func main() {
 
 			largest = getLargest(summary, file.Filename, largest)
 			getLargestPerLanguage(summary, file.Filename, largestPerLanguage)
+			longest = getMostLines(summary, file.Filename, longest)
+			getMostLinesPerLanguage(summary, file.Filename, longestPerLanguage)
 
 			mostCommented = getMostCommented(summary, file.Filename, mostCommented)
 			getMostCommentedPerLanguage(summary, file.Filename, mostCommentedPerLanguage)
@@ -419,6 +423,10 @@ func main() {
 	_ = ioutil.WriteFile("./results/mostCommented.json", []byte(v), 0600)
 	v, _ = json.Marshal(mostCommentedPerLanguage)
 	_ = ioutil.WriteFile("./results/mostCommentedPerLanguage.json", []byte(v), 0600)
+	v, _ = json.Marshal(longest)
+	_ = ioutil.WriteFile("./results/longest.json", []byte(v), 0600)
+	v, _ = json.Marshal(longestPerLanguage)
+	_ = ioutil.WriteFile("./results/longestPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(ymlOrYaml)
 	_ = ioutil.WriteFile("./results/ymlOrYaml.json", []byte(v), 0600)
