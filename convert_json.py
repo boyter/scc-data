@@ -194,6 +194,39 @@ def pureProjects():
         text_file.write(json.dumps(new, sort_keys=True))
 
 
+def multipleGitIgnore():
+    '''
+    Converts the output of multipleGitIgnore into something
+    we can throw into a chart library since it needs to 
+    be sorted
+    It is a count of the number of projects and gitignores
+
+    EG. gitignore:project where 123 projects have 2 gitignore files
+    https://jsfiddle.net/jqt81ufs/1/
+    '''
+    data = '[]'
+    with open('./results/multipleGitIgnore.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    new = []
+    for x, y in d.iteritems():
+        new.append([int(x), y])
+
+    def cmp(a, b):
+        if a == b:
+            return 0
+        if a < b:
+            return -1
+        return 1
+
+    new.sort(cmp)
+
+    with open("./results/multipleGitIgnore_converted.json", "w") as text_file:
+        text_file.write(json.dumps(new, sort_keys=True))
+
+
 if __name__ == '__main__':
     filesPerProject()
     projectsPerLanguage()
@@ -201,6 +234,7 @@ if __name__ == '__main__':
     largestPerLanguage()
     longestPerLanguage()
     pureProjects()
+    multipleGitIgnore()
 
 
 
