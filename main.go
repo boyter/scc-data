@@ -246,6 +246,8 @@ func main() {
 
 	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
 
+	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
+
 	for file := range queue {
 		summary, err := unmarshallContent(file.Content)
 
@@ -322,15 +324,13 @@ func main() {
 			getMostCommentedPerLanguage(summary, file.Filename, mostCommentedPerLanguage)
 
 			getYmlOrYaml(summary, ymlOrYaml)
-
 			getPurity(summary, pureProjects)
 			getPurityByLanguage(summary, pureProjectsByLanguage)
-
 			getFactoryCount(summary, javaFactory)
-
 			getCursingByLanguage(summary, cursingByLanguage)
-
 			getGitIgnore(summary, multipleGitIgnore)
+
+			getHasCoffeeScriptAndTypeScript(summary, hasCoffeeScriptAndTypescript)
 		}
 	}
 
@@ -451,4 +451,7 @@ func main() {
 
 	v, _ = json.Marshal(multipleGitIgnore)
 	_ = ioutil.WriteFile("./results/multipleGitIgnore.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(hasCoffeeScriptAndTypescript)
+	_ = ioutil.WriteFile("./results/hasCoffeeScriptAndTypescript.json", []byte(v), 0600)
 }

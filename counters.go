@@ -596,3 +596,25 @@ func getGitIgnore(summary []LanguageSummary, x map[int64]int64) {
 		x[0] = x[0] + 1
 	}
 }
+
+func getHasCoffeeScriptAndTypeScript(summary []LanguageSummary, x map[string]int64) {
+	hasCoffeeScript := false
+	hasTypeScript := false
+
+	for _, y := range summary {
+
+		if y.Name == "CoffeeScript" {
+			hasCoffeeScript = true
+		}
+
+		if y.Name == "TypeScript" {
+			hasTypeScript = true
+		}
+	}
+
+	if hasTypeScript && hasCoffeeScript {
+		x["Both"] = x["Both"] + 1
+	} else {
+		x["Nope"] = x["Nope"] + 1
+	}
+}
