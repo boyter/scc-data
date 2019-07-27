@@ -501,13 +501,12 @@ func getMostLinesPerLanguage(summary []LanguageSummary, filename string, x map[s
 
 ///////////////
 
-
 func getYmlOrYaml(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
 		if y.Name == "YAML" {
 			for _, z := range y.Files {
 
-				if z.Extension == "yml" || strings.HasSuffix(z.Extension,".yml") {
+				if z.Extension == "yml" || strings.HasSuffix(z.Extension, ".yml") {
 					x["yml"] = x["yml"] + 1
 				} else if z.Extension == "yaml" || strings.HasSuffix(z.Extension, ".yaml") {
 					x["yaml"] = x["yaml"] + 1
@@ -551,7 +550,7 @@ func getFactoryCount(summary []LanguageSummary, x map[string]int64) {
 					x["factoryfactoryfactory"] = x["factoryfactoryfactory"] + 1
 				} else if strings.Contains(n, "factoryfactory") {
 					x["factoryfactory"] = x["factoryfactory"] + 1
-				} else if strings.Contains(n,"factory") {
+				} else if strings.Contains(n, "factory") {
 					x["factory"] = x["factory"] + 1
 				}
 			}
@@ -574,7 +573,7 @@ func containsCurse(name string) bool {
 	l := strings.ToLower(name)
 
 	for _, c := range curseWords {
-		if strings.HasPrefix(l, c + ".") {
+		if strings.HasPrefix(l, c+".") {
 			return true
 		}
 	}

@@ -55,7 +55,7 @@ func processPath(s string) string {
 	return filename
 }
 
-func cleanString(s string) (string) {
+func cleanString(s string) string {
 	reg, err := regexp.Compile("[^a-z0-9-._]+")
 	if err != nil {
 		log.Fatal(err)
@@ -88,7 +88,7 @@ func process(id int, s string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
-	cmd = exec.CommandContext(ctx, "git", "clone", "--depth=1", s + ".git", "/tmp/scc-tmp-path-" + strconv.Itoa(id))
+	cmd = exec.CommandContext(ctx, "git", "clone", "--depth=1", s+".git", "/tmp/scc-tmp-path-"+strconv.Itoa(id))
 
 	cmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0")
 	resp, err := cmd.Output()

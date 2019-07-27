@@ -87,6 +87,7 @@ func getFiles(directory string, output chan File) error {
 	return nil
 }
 
+
 func unmarshallContent(content []byte) ([]LanguageSummary, error) {
 	var summary []LanguageSummary
 	if err := json.Unmarshal(content, &summary); err != nil {
@@ -174,6 +175,8 @@ func makeTimestampSeconds() int64 {
 
 func main() {
 	startTime := makeTimestampSeconds()
+
+	// below is for testing locally
 	queue := make(chan File, 1000)
 	go getFiles("./json/", queue)
 
@@ -248,7 +251,13 @@ func main() {
 
 	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
 
+	count := 0
 	for file := range queue {
+		count++
+		if count % 100 == 0 {
+			fmt.Println("Processing", file.Name, count)
+		}
+
 		summary, err := unmarshallContent(file.Content)
 
 		if strings.HasPrefix(file.Name, "bitbucket") {
