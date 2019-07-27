@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 )
 
 
@@ -30,8 +31,11 @@ func getFileKeysS3(output chan string) {
 	}, func(page *s3.ListObjectsOutput, lastPage bool) bool {
 		for _, value := range page.Contents {
 			count++
-			//fmt.Println("Key", *value.Key)
 			output <- *value.Key
+
+			//if count >= 5000 {
+			//	return false
+			//}
 		}
 
 		return true
@@ -46,24 +50,30 @@ func getFileKeysS3(output chan string) {
 
 // Takes in a channel of S3 keys and goes and gets em for processing
 func getFilesS3(input chan string, output chan File) {
+	for key := range input {
+		data, err := clientReadS3File("sloccloccode", key)
+
+		if err == nil {
+			output <- File{
+				Filename: key,
+				Content:  data,
+			}
+		} else {
+			// If we get an error then back off for a while
+			fmt.Println(err.Error())
+			time.Sleep(10 * time.Second)
+		}
+	}
+}
+
+// Read a file from s3 into memory
+func clientReadS3File(bucket string, key string) ([]byte, error) {
 	svc, _ := session.NewSession(&aws.Config{
 		Region: aws.String("ap-southeast-2")},
 	)
 
 	s3client := s3.New(svc)
 
-	for key := range input {
-		//fmt.Println("Fetching", key)
-		data, _ := clientReadS3File(s3client, "sloccloccode", key)
-
-		output <- File{
-			Filename: key,
-			Content:  data,
-		}
-	}
-}
-
-func clientReadS3File(s3client *s3.S3, bucket string, key string) ([]byte, error) {
 	results, err := s3client.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(key),
@@ -89,6 +99,7 @@ type File struct {
 }
 
 
+// Adds a file into the tar we are writing out
 func addFile(tw * tar.Writer, file File) error {
 
 	// now lets create the header as needed for this file within the tarball
@@ -118,9 +129,9 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	// Spawn off hundreds of goroutines to fetch from s3
+	// Spawn off goroutines to fetch from s3
 	go func() {
-		for i := 0; i < 100; i++ {
+		for i := 0; i < 50; i++ {
 			wg.Add(1)
 			go func() {
 				getFilesS3(keys, queue)
