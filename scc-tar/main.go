@@ -22,11 +22,14 @@ func getFileKeysS3(output chan string) {
 
 	s3client := s3.New(svc)
 
+	count := 0
+
 	err = s3client.ListObjectsPages(&s3.ListObjectsInput{
 		Bucket: aws.String("sloccloccode"),
 		Prefix: aws.String(""),
 	}, func(page *s3.ListObjectsOutput, lastPage bool) bool {
 		for _, value := range page.Contents {
+			count++
 			//fmt.Println("Key", *value.Key)
 			output <- *value.Key
 		}

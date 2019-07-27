@@ -1,10 +1,14 @@
 package main
 
 import (
+	"archive/tar"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -85,6 +89,36 @@ func getFiles(directory string, output chan File) error {
 
 	close(output)
 	return nil
+}
+
+
+func getFilesTar(output chan File) {
+	file, err := os.Open("./output.tar")
+	if err != nil {
+		fmt.Println("error: There is a problem with os.Open:" + err.Error())
+	}
+
+	tr := tar.NewReader(file)
+	for {
+		hdr, err := tr.Next()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		bs, _ := ioutil.ReadAll(tr)
+
+		output <- File{
+			Name: hdr.Name,
+			Content: bs,
+		}
+	}
+
+	close(output)
 }
 
 
@@ -178,7 +212,8 @@ func main() {
 
 	// below is for testing locally
 	queue := make(chan File, 1000)
-	go getFiles("./json/", queue)
+	//go getFiles("./json/", queue)
+	go getFilesTar(queue)
 
 	var projectCount int64
 	var lineCount int64
