@@ -117,7 +117,7 @@ func main() {
 
 	// Spawn off hundreds of goroutines to fetch from s3
 	go func() {
-		for i := 0; i < 300; i++ {
+		for i := 0; i < 100; i++ {
 			wg.Add(1)
 			go func() {
 				getFilesS3(keys, queue)
