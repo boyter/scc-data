@@ -123,7 +123,7 @@ func addFile(tw * tar.Writer, file File) error {
 // so we can download it easily and process
 func main() {
 	// this is for processing for real
-	keys := make(chan string, 1000)
+	keys := make(chan string, 11000000) // large enough to hold everything
 	queue := make(chan File, 1000)
 	go getFileKeysS3(keys)
 
