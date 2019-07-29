@@ -15,7 +15,6 @@ import (
 	"time"
 )
 
-
 func getFileKeysS3(output chan string) {
 	svc, err := session.NewSession(&aws.Config{
 		Region: aws.String("ap-southeast-2")},
@@ -98,9 +97,8 @@ type File struct {
 	Content  []byte
 }
 
-
 // Adds a file into the tar we are writing out
-func addFile(tw * tar.Writer, file File) error {
+func addFile(tw *tar.Writer, file File) error {
 
 	// now lets create the header as needed for this file within the tarball
 	header := new(tar.Header)
@@ -142,7 +140,6 @@ func main() {
 		close(queue)
 	}()
 
-
 	// set up the output file
 	file, err := os.Create("output.tar.gz")
 	if err != nil {
@@ -159,7 +156,7 @@ func main() {
 	count := 0
 	for f := range queue {
 		count++
-		if count % 100 == 0 {
+		if count%100 == 0 {
 			fmt.Println(f.Filename, count)
 		}
 

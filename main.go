@@ -91,7 +91,6 @@ func getFiles(directory string, output chan File) error {
 	return nil
 }
 
-
 func getFilesTar(output chan File) {
 	file, err := os.Open("./output.tar")
 	if err != nil {
@@ -113,14 +112,13 @@ func getFilesTar(output chan File) {
 		bs, _ := ioutil.ReadAll(tr)
 
 		output <- File{
-			Name: hdr.Name,
+			Name:    hdr.Name,
 			Content: bs,
 		}
 	}
 
 	close(output)
 }
-
 
 func unmarshallContent(content []byte) ([]LanguageSummary, error) {
 	var summary []LanguageSummary
@@ -289,7 +287,7 @@ func main() {
 	count := 0
 	for file := range queue {
 		count++
-		if count % 100 == 0 {
+		if count%100 == 0 {
 			fmt.Println("Processing", file.Name, count)
 		}
 
