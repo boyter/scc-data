@@ -52,16 +52,9 @@ def filesPerProjectPercentile():
 
     d = json.loads(data)
 
-
-    total = 0
-
     new = []
     for x, y in d.iteritems():
-        total += y
         new.append([int(x), y])
-
-    print new[0]
-    print total
 
     def cmp(a, b):
         if a == b:
@@ -72,6 +65,23 @@ def filesPerProjectPercentile():
 
     new.sort(cmp)
 
+    # total number of projects
+    projectCount = 0
+    for x in new:
+        projectCount += x[1]
+
+
+    # Percentages
+    percent = []
+    for x in new:
+        if len(percent) == 0:
+            percent.append([x[0], (float(x[1])/float(projectCount)) * float(100)])
+        else:
+            percent.append([x[0], (float(x[1])/float(projectCount)) * float(100) + percent[len(percent)-1][1]])
+
+    for p in percent:
+        print p
+    # print percent
     # with open("./results/filesPerProject_converted.json", "w") as text_file:
     #     text_file.write(json.dumps(new, sort_keys=True))
 

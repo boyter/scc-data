@@ -3,3 +3,5 @@ json
 *.json
 totalStats.txt
 *.txt
+output.tar
+output.tar.gz
