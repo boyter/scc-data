@@ -42,6 +42,40 @@ def filesPerProject():
         text_file.write(json.dumps(new, sort_keys=True))
 
 
+def filesPerProjectPercentile():
+    '''
+    Want to plot by percentile
+    '''
+    data = '[]'
+    with open('./results/filesPerProject.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+
+    total = 0
+
+    new = []
+    for x, y in d.iteritems():
+        total += y
+        new.append([int(x), y])
+
+    print new[0]
+    print total
+
+    def cmp(a, b):
+        if a == b:
+            return 0
+        if a < b:
+            return -1
+        return 1
+
+    new.sort(cmp)
+
+    # with open("./results/filesPerProject_converted.json", "w") as text_file:
+    #     text_file.write(json.dumps(new, sort_keys=True))
+
+
 def projectsPerLanguage():
     '''
     Converts output so we can see the number of projects per language
@@ -229,6 +263,7 @@ def multipleGitIgnore():
 
 if __name__ == '__main__':
     filesPerProject()
+    filesPerProjectPercentile()
     projectsPerLanguage()
     mostCommonFileNames()
     largestPerLanguage()
