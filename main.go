@@ -283,6 +283,8 @@ func main() {
 	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
 
 	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
+	hasTypeScriptExclusively := map[string]int64{} // Count of projects with just typescript
+
 
 	count := 0
 	for file := range queue {
@@ -373,6 +375,7 @@ func main() {
 			getGitIgnore(summary, multipleGitIgnore)
 
 			getHasCoffeeScriptAndTypeScript(summary, hasCoffeeScriptAndTypescript)
+			getHasTypeScriptExclusively(summary, hasTypeScriptExclusively)
 		}
 	}
 
@@ -496,4 +499,7 @@ func main() {
 
 	v, _ = json.Marshal(hasCoffeeScriptAndTypescript)
 	_ = ioutil.WriteFile("./results/hasCoffeeScriptAndTypescript.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(hasTypeScriptExclusively)
+	_ = ioutil.WriteFile("./results/hasTypeScriptExclusively.json", []byte(v), 0600)
 }

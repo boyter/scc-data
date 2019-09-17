@@ -617,3 +617,24 @@ func getHasCoffeeScriptAndTypeScript(summary []LanguageSummary, x map[string]int
 		x["Nope"] = x["Nope"] + 1
 	}
 }
+
+func getHasTypeScriptExclusively(summary []LanguageSummary, x map[string]int64) {
+	hasJavaScript := false
+	hasTypeScript := false
+
+	for _, y := range summary {
+		if y.Name == "JavaScript" {
+			hasJavaScript = true
+		}
+
+		if y.Name == "TypeScript" {
+			hasTypeScript = true
+		}
+	}
+
+	if hasTypeScript && !hasJavaScript {
+		x["Exclusive"] = x["Exclusive"] + 1
+	} else {
+		x["Both"] = x["Both"] + 1
+	}
+}

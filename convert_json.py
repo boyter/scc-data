@@ -145,8 +145,12 @@ function drawBasic() {
 
     percent_log.sort(cmp)
 
+    other = []
+    for t in percent_log:
+        other.append([t[1],t[0]])
+
     with open("./results/filesPerProjectPercent_converted.json", "w") as text_file:
-        text_file.write(json.dumps(percent_log, sort_keys=True))
+        text_file.write(json.dumps(other, sort_keys=True))
 
 
 def roundup(x, size=10.0):
@@ -339,6 +343,43 @@ def multipleGitIgnore():
         text_file.write(json.dumps(new, sort_keys=True))
 
 
+def mostComplexPerLanguage():
+    '''
+    Convert the largest files per language into markdown
+    table for embedding
+    '''
+    data = '[]'
+    with open('./results/mostComplexPerLanguage.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    new = []
+    for x, y in d.iteritems():
+        new.append([x, y])
+
+    def cmp(a, b):
+        if a[1]['Value'] == b[1]['Value']:
+            return 0
+        if a[1]['Value'] > b[1]['Value']:
+            return -1
+        return 1
+
+    new.sort(cmp)
+
+    res = [
+        '| language | filename | complexity |',
+        '| -------- | -------- | ----- |',
+    ]
+
+    for y in new:
+        x = '| %s | %s | %s |' % (y[0], y[1]['Filename'], y[1]['Value'])
+        res.append(x)
+
+    with open("./results/mostComplexPerLanguage_converted.txt", "w") as text_file:
+        text_file.write('''\n'''.join(res))
+
+
 if __name__ == '__main__':
     filesPerProject()
     filesPerProjectPercentile()
@@ -348,6 +389,7 @@ if __name__ == '__main__':
     longestPerLanguage()
     pureProjects()
     multipleGitIgnore()
+    mostComplexPerLanguage()
 
 
 
