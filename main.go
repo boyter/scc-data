@@ -279,6 +279,7 @@ func main() {
 	javaFactory := map[string]int64{} // Count of factoryfactoryfactory factoryfactory and factory
 
 	cursingByLanguage := map[string]int64{} // Cursing names by language
+	cursingByWord := map[string]int64{} // Cursing names by most common curse word
 
 	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
 
@@ -286,6 +287,7 @@ func main() {
 	hasTypeScriptExclusively := map[string]int64{} // Count of projects with just typescript
 
 	upperLowerOrMixedCase := map[string]int64{} // Count if we have upper/lower or mixed case in the name
+	upperLowerOrMixedCaseIgnoreExt := map[string]int64{} // Count if we have upper/lower or mixed case in the name ignoring ext
 
 	count := 0
 	for file := range queue {
@@ -373,12 +375,14 @@ func main() {
 			getPurityByLanguage(summary, pureProjectsByLanguage)
 			getFactoryCount(summary, javaFactory)
 			getCursingByLanguage(summary, cursingByLanguage)
+			getCursingByWord(summary, cursingByWord)
 			getGitIgnore(summary, multipleGitIgnore)
 
 			getHasCoffeeScriptAndTypeScript(summary, hasCoffeeScriptAndTypescript)
 			getHasTypeScriptExclusively(summary, hasTypeScriptExclusively)
 
 			getUpperLowerOrMixedCase(summary, upperLowerOrMixedCase)
+			getUpperLowerOrMixedCaseIgnoreExt(summary, upperLowerOrMixedCaseIgnoreExt)
 		}
 	}
 
@@ -496,6 +500,8 @@ func main() {
 
 	v, _ = json.Marshal(cursingByLanguage)
 	_ = ioutil.WriteFile("./results/cursingByLanguage.json", []byte(v), 0600)
+	v, _ = json.Marshal(cursingByWord)
+	_ = ioutil.WriteFile("./results/cursingByWord.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(multipleGitIgnore)
 	_ = ioutil.WriteFile("./results/multipleGitIgnore.json", []byte(v), 0600)
@@ -508,4 +514,6 @@ func main() {
 
 	v, _ = json.Marshal(upperLowerOrMixedCase)
 	_ = ioutil.WriteFile("./results/upperLowerOrMixedCase.json", []byte(v), 0600)
+	v, _ = json.Marshal(upperLowerOrMixedCaseIgnoreExt)
+	_ = ioutil.WriteFile("./results/upperLowerOrMixedCaseIgnoreExt.json", []byte(v), 0600)
 }

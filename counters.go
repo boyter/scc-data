@@ -562,23 +562,35 @@ func getCursingByLanguage(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
 
 		for _, z := range y.Files {
-			if containsCurse(z.Filename) {
+			if containsCurse(z.Filename) != "" {
 				x[y.Name] = x[y.Name] + 1
 			}
 		}
 	}
 }
 
-func containsCurse(name string) bool {
+func getCursingByWord(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+
+		for _, z := range y.Files {
+			c := containsCurse(z.Filename)
+			if c != "" {
+				x[c] = x[c] + 1
+			}
+		}
+	}
+}
+
+func containsCurse(name string) string {
 	l := strings.ToLower(name)
 
 	for _, c := range curseWords {
 		if strings.HasPrefix(l, c+".") {
-			return true
+			return c
 		}
 	}
 
-	return false
+	return ""
 }
 
 func getGitIgnore(summary []LanguageSummary, x map[int64]int64) {
@@ -646,6 +658,48 @@ func getUpperLowerOrMixedCase(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
 		for _, t := range y.Files {
 			for _, x := range t.Filename {
+				z := string(x)
+
+				if strings.ToUpper(z) == z {
+					hasUpper = true
+				}
+
+				if strings.ToLower(z) == z {
+					hasLower = true
+				}
+			}
+		}
+	}
+
+	if hasUpper && hasLower {
+		x["Both"] = x["Both"] + 1
+		return
+	}
+
+	if hasUpper {
+		x["Upper"] = x["Upper"] + 1
+	}
+
+	if hasLower {
+		x["Lower"] = x["Lower"] + 1
+	}
+}
+
+func getUpperLowerOrMixedCaseIgnoreExt(summary []LanguageSummary, x map[string]int64) {
+	hasUpper := false
+	hasLower := false
+
+	for _, y := range summary {
+		for _, t := range y.Files {
+
+			name := t.Filename
+			index := strings.Index(t.Filename, ".")
+
+			if index != -1 {
+				name = t.Filename[:index]
+			}
+
+			for _, x := range name {
 				z := string(x)
 
 				if strings.ToUpper(z) == z {
