@@ -638,3 +638,37 @@ func getHasTypeScriptExclusively(summary []LanguageSummary, x map[string]int64) 
 		x["Both"] = x["Both"] + 1
 	}
 }
+
+func getUpperLowerOrMixedCase(summary []LanguageSummary, x map[string]int64) {
+	hasUpper := false
+	hasLower := false
+
+	for _, y := range summary {
+		for _, t := range y.Files {
+			for _, x := range t.Filename {
+				z := string(x)
+
+				if strings.ToUpper(z) == z {
+					hasUpper = true
+				}
+
+				if strings.ToLower(z) == z {
+					hasLower = true
+				}
+			}
+		}
+	}
+
+	if hasUpper && hasLower {
+		x["Both"] = x["Both"] + 1
+		return
+	}
+
+	if hasUpper {
+		x["Upper"] = x["Upper"] + 1
+	}
+
+	if hasLower {
+		x["Lower"] = x["Lower"] + 1
+	}
+}

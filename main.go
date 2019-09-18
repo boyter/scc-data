@@ -285,6 +285,7 @@ func main() {
 	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
 	hasTypeScriptExclusively := map[string]int64{} // Count of projects with just typescript
 
+	upperLowerOrMixedCase := map[string]int64{} // Count if we have upper/lower or mixed case in the name
 
 	count := 0
 	for file := range queue {
@@ -376,6 +377,8 @@ func main() {
 
 			getHasCoffeeScriptAndTypeScript(summary, hasCoffeeScriptAndTypescript)
 			getHasTypeScriptExclusively(summary, hasTypeScriptExclusively)
+
+			getUpperLowerOrMixedCase(summary, upperLowerOrMixedCase)
 		}
 	}
 
@@ -502,4 +505,7 @@ func main() {
 
 	v, _ = json.Marshal(hasTypeScriptExclusively)
 	_ = ioutil.WriteFile("./results/hasTypeScriptExclusively.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(upperLowerOrMixedCase)
+	_ = ioutil.WriteFile("./results/upperLowerOrMixedCase.json", []byte(v), 0600)
 }
