@@ -352,11 +352,11 @@ func main() {
 			getProjectsPerLanguage(summary, projectsPerLanguage)
 
 			// NB this might be too large and need to purge certain names over time
-			// TODO need to purge these as mentioned above
 			getFileNamesCount(summary, fileNamesCount)
 			getFileNamesNoExtensionCount(summary, fileNamesNoExtensionCount)
 			getFileNamesNoExtensionLowercaseCount(summary, fileNamesNoExtensionLowercaseCount)
 
+			// Purge counts as mentioned above to avoid blowing memory budget
 			if count%100 == 0 {
 				fileNamesCount = cullCountMap(fileNamesCount)
 				fileNamesNoExtensionCount = cullCountMap(fileNamesNoExtensionCount)

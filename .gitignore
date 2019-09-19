@@ -5,3 +5,5 @@ totalStats.txt
 *.txt
 output.tar
 output.tar.gz
+scc-data
+results.tar.gz
