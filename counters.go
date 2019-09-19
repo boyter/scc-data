@@ -218,6 +218,22 @@ func getLicencePerProject(summary []LanguageSummary, x map[string]int64) {
 
 /////////////////////////
 
+func cullCountMap(x map[string]int64) map[string]int64 {
+	if len(x) >= 100 {
+		newx := map[string]int64{}
+
+		for k, v := range x {
+			if v > 10 {
+				newx[k] = v
+			}
+		}
+
+		return newx
+	}
+
+	return x
+}
+
 func getFileNamesCount(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
 		for _, z := range y.Files {
