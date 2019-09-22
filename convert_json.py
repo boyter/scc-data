@@ -45,7 +45,8 @@ def filesPerProject():
 def filesPerProjectPercentile():
     '''
     Want to plot by percentile
-    https://jsfiddle.net/uLw08scq/
+    https://jsfiddle.net/61mv2xrc/
+    https://jsfiddle.net/61mv2xrc/1/
 
 
     google.charts.load('current', {packages: ['corechart', 'line']});
@@ -140,6 +141,16 @@ function drawBasic() {
         #     r = int(roundup(x[0], 1000.0))
         #     tens[r] = x[1]
 
+        # if x[0] > 10000 and x[0] <= 100000:
+        #     # rount to nearest value of 100
+        #     r = int(roundup(x[0], 10000.0))
+        #     tens[r] = x[1]
+
+        # if x[0] > 100000 and x[0] <= 1000000:
+        #     # rount to nearest value of 100000
+        #     r = int(roundup(x[0], 100000.0))
+        #     tens[r] = x[1]
+
     for t, c in tens.iteritems():
         percent_log.append([t,c])
 
@@ -147,7 +158,7 @@ function drawBasic() {
 
     other = []
     for t in percent_log:
-        other.append([t[1],t[0]])
+        other.append([t[0],t[1]])
 
     with open("./results/filesPerProjectPercent_converted.json", "w") as text_file:
         text_file.write(json.dumps(other, sort_keys=True))
