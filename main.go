@@ -63,6 +63,7 @@ type Largest struct {
 	Comment    int64
 	Blank      int64
 	Complexity int64
+	Url        string
 }
 
 // Gets from disk, but could be S3 just as easily
@@ -205,6 +206,19 @@ func makeTimestampSeconds() int64 {
 	return time.Now().UnixNano() / int64(time.Second)
 }
 
+func fileNameToLink(filename string) string {
+	// bitbucket.ad66216.alex-danners-turner-project.json
+	filename = strings.Replace(filename, ".json", "", -1)
+	split := strings.Split(filename, ".")
+
+	tld := ".com/"
+	if split[0] == "bitbuckt" {
+		tld = ".org/"
+	}
+
+	return "https://" + split[0] + tld + split[1] + "/" + strings.Join(split[2:], "")
+}
+
 func main() {
 	startTime := makeTimestampSeconds()
 
@@ -279,21 +293,21 @@ func main() {
 	javaFactory := map[string]int64{} // Count of factoryfactoryfactory factoryfactory and factory
 
 	cursingByLanguage := map[string]int64{} // Cursing names by language
-	cursingByWord := map[string]int64{} // Cursing names by most common curse word
+	cursingByWord := map[string]int64{}     // Cursing names by most common curse word
 
 	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
 
 	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
-	hasTypeScriptExclusively := map[string]int64{} // Count of projects with just typescript
+	hasTypeScriptExclusively := map[string]int64{}     // Count of projects with just typescript
 
-	upperLowerOrMixedCase := map[string]int64{} // Count if we have upper/lower or mixed case in the name
+	upperLowerOrMixedCase := map[string]int64{}          // Count if we have upper/lower or mixed case in the name
 	upperLowerOrMixedCaseIgnoreExt := map[string]int64{} // Count if we have upper/lower or mixed case in the name ignoring ext
 
 	count := 0
 	for file := range queue {
 		count++
 		if count%100 == 0 {
-			fmt.Println("Processing", file.Name, count)
+			fmt.Println("Processing", file.Name, count, fileNameToLink(file.Name))
 		}
 
 		summary, err := unmarshallContent(file.Content)
@@ -352,30 +366,32 @@ func main() {
 			getProjectsPerLanguage(summary, projectsPerLanguage)
 
 			// NB this might be too large and need to purge certain names over time
-			getFileNamesCount(summary, fileNamesCount)
-			getFileNamesNoExtensionCount(summary, fileNamesNoExtensionCount)
+			// The first two are also useless so ignore them
+			//getFileNamesCount(summary, fileNamesCount)
+			//getFileNamesNoExtensionCount(summary, fileNamesNoExtensionCount)
 			getFileNamesNoExtensionLowercaseCount(summary, fileNamesNoExtensionLowercaseCount)
 
 			// Purge counts as mentioned above to avoid blowing memory budget
 			if count%100 == 0 {
-				fileNamesCount = cullCountMap(fileNamesCount)
-				fileNamesNoExtensionCount = cullCountMap(fileNamesNoExtensionCount)
+				//fileNamesCount = cullCountMap(fileNamesCount)
+				//fileNamesNoExtensionCount = cullCountMap(fileNamesNoExtensionCount)
 				fileNamesNoExtensionLowercaseCount = cullCountMap(fileNamesNoExtensionLowercaseCount)
 			}
 
 			mostComplex = getMostComplex(summary, file.Filename, mostComplex)
 			getMostComplexPerLanguage(summary, file.Filename, mostComplexPerLanguage)
 
-			mostComplexWeighted = getMostComplexWeighted(summary, file.Filename, mostComplexWeighted)
-			getMostComplexWeightedPerLanguage(summary, file.Filename, mostComplexWeightedPerLanguage)
+			// Turns out to not be useful in practice
+			//mostComplexWeighted = getMostComplexWeighted(summary, file.Filename, mostComplexWeighted)
+			//getMostComplexWeightedPerLanguage(summary, file.Filename, mostComplexWeightedPerLanguage)
 
 			largest = getLargest(summary, file.Filename, largest)
-			getLargestPerLanguage(summary, file.Filename, largestPerLanguage)
+			getLargestPerLanguage(summary, file.Filename, fileNameToLink(file.Name), largestPerLanguage)
 			longest = getMostLines(summary, file.Filename, longest)
-			getMostLinesPerLanguage(summary, file.Filename, longestPerLanguage)
+			getMostLinesPerLanguage(summary, file.Filename, fileNameToLink(file.Name), longestPerLanguage)
 
 			mostCommented = getMostCommented(summary, file.Filename, mostCommented)
-			getMostCommentedPerLanguage(summary, file.Filename, mostCommentedPerLanguage)
+			getMostCommentedPerLanguage(summary, file.Filename, fileNameToLink(file.Name), mostCommentedPerLanguage)
 
 			getYmlOrYaml(summary, ymlOrYaml)
 			getPurity(summary, pureProjects)
@@ -407,6 +423,11 @@ func main() {
 	fmt.Println("StartTime      ", startTime)
 	fmt.Println("EndTime        ", endTime)
 	fmt.Println("TotalTime(s)   ", endTime-startTime)
+
+	//if strings.Contains("true", "t") {
+	//	fmt.Println("Bailing out early")
+	//	return
+	//}
 
 	stats := fmt.Sprintf("NoFiles %d\nProjectCount %d\nLineCount %d\nCodeCount %d\nBlankCount %d\nCommentCount %d\nComplexityCount %d\nFileCount %d\nByteCount %d\nTotalTime(s) %d", noFiles, projectCount, lineCount, codeCount, blankCount, commentCount, complexityCount, fileCount, byteCount, endTime-startTime)
 	_ = ioutil.WriteFile("./results/totalStats.txt", []byte(stats), 0600)

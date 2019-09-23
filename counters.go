@@ -399,7 +399,7 @@ func getLargest(summary []LanguageSummary, filename string, x Largest) Largest {
 	return x
 }
 
-func getLargestPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+func getLargestPerLanguage(summary []LanguageSummary, filename string, url string, x map[string]Largest) {
 	for _, y := range summary {
 		for _, z := range y.Files {
 
@@ -415,6 +415,7 @@ func getLargestPerLanguage(summary []LanguageSummary, filename string, x map[str
 					Lines:      z.Lines,
 					Bytes:      z.Bytes,
 					Complexity: z.Complexity,
+					Url:        url,
 				}
 			}
 		}
@@ -446,7 +447,7 @@ func getMostCommented(summary []LanguageSummary, filename string, x Largest) Lar
 	return x
 }
 
-func getMostCommentedPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+func getMostCommentedPerLanguage(summary []LanguageSummary, filename string, url string, x map[string]Largest) {
 	for _, y := range summary {
 		for _, z := range y.Files {
 
@@ -462,6 +463,7 @@ func getMostCommentedPerLanguage(summary []LanguageSummary, filename string, x m
 					Lines:      z.Lines,
 					Bytes:      z.Bytes,
 					Complexity: z.Complexity,
+					Url:        url,
 				}
 			}
 		}
@@ -493,7 +495,7 @@ func getMostLines(summary []LanguageSummary, filename string, x Largest) Largest
 	return x
 }
 
-func getMostLinesPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+func getMostLinesPerLanguage(summary []LanguageSummary, filename string, url string, x map[string]Largest) {
 	for _, y := range summary {
 		for _, z := range y.Files {
 
@@ -509,6 +511,7 @@ func getMostLinesPerLanguage(summary []LanguageSummary, filename string, x map[s
 					Lines:      z.Lines,
 					Bytes:      z.Bytes,
 					Complexity: z.Complexity,
+					Url:        url,
 				}
 			}
 		}
