@@ -209,6 +209,7 @@ def mostCommonFileNames():
     d = json.loads(data)
 
     d = sorted(d.items(), key=operator.itemgetter(1), reverse=True)
+    d = d[:51]
 
     with open("./results/fileNamesNoExtensionLowercaseCount_converted.json", "w") as text_file:
         text_file.write(json.dumps(d))
