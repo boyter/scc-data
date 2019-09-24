@@ -193,7 +193,6 @@ def projectsPerLanguage():
 
     new.sort(cmp)
 
-
     with open("./results/projectsPerLanguage_converted.json", "w") as text_file:
         text_file.write(json.dumps(new))
 
@@ -245,7 +244,12 @@ def largestPerLanguage():
     ]
 
     for y in new:
-        x = '| %s | %s | %s |' % (y[0], y[1]['Filename'], y[1]['Bytes'])
+        if 'bitbucket' in y[1]['Url']:
+            link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        else:
+            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
+
+        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
     with open("./results/largestPerLanguage_converted.txt", "w") as text_file:
@@ -282,10 +286,56 @@ def longestPerLanguage():
     ]
 
     for y in new:
-        x = '| %s | %s | %s |' % (y[0], y[1]['Filename'], y[1]['Lines'])
+        if 'bitbucket' in y[1]['Url']:
+            link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        else:
+            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
+
+        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
     with open("./results/longestPerLanguage_converted.txt", "w") as text_file:
+        text_file.write('''\n'''.join(res))
+
+def mostCommentedPerLanguage():
+    '''
+    Convert the longest files per language into markdown
+    table for embedding
+    '''
+    data = '[]'
+    with open('./results/mostCommentedPerLanguage.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    new = []
+    for x, y in d.iteritems():
+        new.append([x, y])
+
+    def cmp(a, b):
+        if a[1]['Comment'] == b[1]['Comment']:
+            return 0
+        if a[1]['Comment'] > b[1]['Comment']:
+            return -1
+        return 1
+
+    new.sort(cmp)
+
+    res = [
+        '| language | filename | comment lines |',
+        '| -------- | -------- | ------------- |',
+    ]
+
+    for y in new:
+        if 'bitbucket' in y[1]['Url']:
+            link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        else:
+            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
+
+        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
+        res.append(x)
+
+    with open("./results/mostCommentedPerLanguage_converted.txt", "w") as text_file:
         text_file.write('''\n'''.join(res))
 
 
@@ -385,7 +435,12 @@ def mostComplexPerLanguage():
     ]
 
     for y in new:
-        x = '| %s | %s | %s |' % (y[0], y[1]['Filename'], y[1]['Value'])
+        if 'bitbucket' in y[1]['Url']:
+            link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        else:
+            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
+
+        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
     with open("./results/mostComplexPerLanguage_converted.txt", "w") as text_file:
@@ -402,6 +457,7 @@ if __name__ == '__main__':
     pureProjects()
     multipleGitIgnore()
     mostComplexPerLanguage()
+    mostCommentedPerLanguage()
 
 
 

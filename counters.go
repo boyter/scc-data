@@ -183,6 +183,14 @@ func getComplexityPerLanguage(summary []LanguageSummary, x map[string]int64) {
 
 /////////////////////////
 
+func getCommentsPerLanguage(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		x[y.Name] = x[y.Name] + y.Comment
+	}
+}
+
+/////////////////////////
+
 func getProjectsPerLanguage(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
 		x[y.Name] = x[y.Name] + 1
@@ -297,7 +305,7 @@ func getMostComplex(summary []LanguageSummary, filename string, x Largest) Large
 	return x
 }
 
-func getMostComplexPerLanguage(summary []LanguageSummary, filename string, x map[string]Largest) {
+func getMostComplexPerLanguage(summary []LanguageSummary, filename string, url string, x map[string]Largest) {
 	for _, y := range summary {
 		for _, z := range y.Files {
 
@@ -312,6 +320,7 @@ func getMostComplexPerLanguage(summary []LanguageSummary, filename string, x map
 					Code:     z.Code,
 					Lines:    z.Lines,
 					Bytes:    z.Bytes,
+					Url:      url,
 				}
 			}
 		}
@@ -579,7 +588,6 @@ func getFactoryCount(summary []LanguageSummary, x map[string]int64) {
 
 func getCursingByLanguage(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
-
 		for _, z := range y.Files {
 			if containsCurse(z.Filename) != "" {
 				x[y.Name] = x[y.Name] + 1
@@ -590,7 +598,6 @@ func getCursingByLanguage(summary []LanguageSummary, x map[string]int64) {
 
 func getCursingByWord(summary []LanguageSummary, x map[string]int64) {
 	for _, y := range summary {
-
 		for _, z := range y.Files {
 			c := containsCurse(z.Filename)
 			if c != "" {
@@ -613,18 +620,15 @@ func containsCurse(name string) string {
 }
 
 func getGitIgnore(summary []LanguageSummary, x map[int64]int64) {
-	hasGitignore := false
+	var count int64
 	for _, y := range summary {
-
+		// Count number of gitignore files for this repository
 		if y.Name == "gitignore" {
-			hasGitignore = true
-			x[int64(len(y.Files))] = x[int64(len(y.Files))] + 1
+			count++
 		}
 	}
 
-	if !hasGitignore {
-		x[0] = x[0] + 1
-	}
+	x[count] = x[count] + 1
 }
 
 func getHasCoffeeScriptAndTypeScript(summary []LanguageSummary, x map[string]int64) {

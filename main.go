@@ -272,6 +272,8 @@ func main() {
 	fileNamesNoExtensionLowercaseCount := map[string]int64{} // Count of filenames tolower and no extensions
 	complexityPerLanguage := map[string]int64{}              // Sum of complexity per language
 
+	commentsPerLanguage := map[string]int64{}              // Sum of comments per language
+
 	sourceCount := map[string]int64{} // Count of each source github/bitbucket/gitlab
 
 	ymlOrYaml := map[string]int64{} // yaml or yml extension?
@@ -296,12 +298,16 @@ func main() {
 	cursingByWord := map[string]int64{}     // Cursing names by most common curse word
 
 	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
+	//multipleGitIgnoreProjects := map[string]int64{} // Projects with > 100 gitignore files
 
 	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
 	hasTypeScriptExclusively := map[string]int64{}     // Count of projects with just typescript
 
 	upperLowerOrMixedCase := map[string]int64{}          // Count if we have upper/lower or mixed case in the name
 	upperLowerOrMixedCaseIgnoreExt := map[string]int64{} // Count if we have upper/lower or mixed case in the name ignoring ext
+
+	//averagePathLengthPerLanguage := map[string]float64{} // Whats the average path length per language?
+
 
 	count := 0
 	for file := range queue {
@@ -365,6 +371,8 @@ func main() {
 			getFilesPerLanguage(summary, filesPerLanguage)
 			getProjectsPerLanguage(summary, projectsPerLanguage)
 
+			getCommentsPerLanguage(summary, commentsPerLanguage)
+
 			// NB this might be too large and need to purge certain names over time
 			// The first two are also useless so ignore them
 			//getFileNamesCount(summary, fileNamesCount)
@@ -379,7 +387,7 @@ func main() {
 			}
 
 			mostComplex = getMostComplex(summary, file.Filename, mostComplex)
-			getMostComplexPerLanguage(summary, file.Filename, mostComplexPerLanguage)
+			getMostComplexPerLanguage(summary, file.Filename, fileNameToLink(file.Name), mostComplexPerLanguage)
 
 			// Turns out to not be useful in practice
 			//mostComplexWeighted = getMostComplexWeighted(summary, file.Filename, mostComplexWeighted)
@@ -493,6 +501,9 @@ func main() {
 
 	v, _ = json.Marshal(sourceCount)
 	_ = ioutil.WriteFile("./results/sourceCount.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(commentsPerLanguage)
+	_ = ioutil.WriteFile("./results/commentsPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(mostComplex)
 	_ = ioutil.WriteFile("./results/mostComplex.json", []byte(v), 0600)
