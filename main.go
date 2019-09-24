@@ -211,6 +211,10 @@ func fileNameToLink(filename string) string {
 	filename = strings.Replace(filename, ".json", "", -1)
 	split := strings.Split(filename, ".")
 
+	if len(split) < 3 {
+		return "UNKNOWN"
+	}
+
 	tld := ".com/"
 	if split[0] == "bitbuckt" {
 		tld = ".org/"
@@ -272,7 +276,7 @@ func main() {
 	fileNamesNoExtensionLowercaseCount := map[string]int64{} // Count of filenames tolower and no extensions
 	complexityPerLanguage := map[string]int64{}              // Sum of complexity per language
 
-	commentsPerLanguage := map[string]int64{}              // Sum of comments per language
+	commentsPerLanguage := map[string]int64{} // Sum of comments per language
 
 	sourceCount := map[string]int64{} // Count of each source github/bitbucket/gitlab
 
@@ -307,7 +311,6 @@ func main() {
 	upperLowerOrMixedCaseIgnoreExt := map[string]int64{} // Count if we have upper/lower or mixed case in the name ignoring ext
 
 	//averagePathLengthPerLanguage := map[string]float64{} // Whats the average path length per language?
-
 
 	count := 0
 	for file := range queue {
