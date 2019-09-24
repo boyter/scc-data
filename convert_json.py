@@ -454,18 +454,50 @@ def locPerLanguage():
 
     d = json.loads(data)
 
+    # Produces the mean
     res = {}
     for langname in d:
         totalfiles = 0
         sumlines = 0
         for y, z in d[langname].iteritems():
-            sumlines += int(y) * z
-            totalfiles += z
+            if int(y) <= 5000:
+                sumlines += int(y) * z
+                totalfiles += z
 
         res[langname] = (sumlines / totalfiles)
 
     with open("./results/locPerLanguage.json", "w") as text_file:
         text_file.write(json.dumps(res))
+
+    # Produces the median
+    res2 = {}
+    for langname in d:
+        tmp = []
+        for y, z in d[langname].iteritems():
+            for x in range(z):
+                tmp.append(int(y))
+
+        res2[langname] = tmp[len(tmp) / 2]
+
+    with open("./results/locPerLanguageMedian.json", "w") as text_file:
+        text_file.write(json.dumps(res2))
+
+    t = []
+    for x in res:
+        t.append(x)
+    t.sort()
+
+    result = [
+        '| language | mean < 5000 | median |',
+        '| -------- | ----------- | ------ |',
+    ]
+
+    for y in t:
+        x = '| %s | %s | %s |' % (y, res[y], res2[y])
+        result.append(x)
+
+    with open("./results/locPerLanguage_converted.txt", "w") as text_file:
+        text_file.write('''\n'''.join(result))
 
 
 if __name__ == '__main__':
