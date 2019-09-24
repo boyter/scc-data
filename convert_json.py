@@ -447,6 +447,27 @@ def mostComplexPerLanguage():
         text_file.write('''\n'''.join(res))
 
 
+def locPerLanguage():
+    data = '[]'
+    with open('./results/lineDistributionPerLanguage.json', 'r') as myfile:
+        data = myfile.read()
+
+    d = json.loads(data)
+
+    res = {}
+    for langname in d:
+        totalfiles = 0
+        sumlines = 0
+        for y, z in d[langname].iteritems():
+            sumlines += int(y) * z
+            totalfiles += z
+
+        res[langname] = (sumlines / totalfiles)
+
+    with open("./results/locPerLanguage.json", "w") as text_file:
+        text_file.write(json.dumps(res))
+
+
 if __name__ == '__main__':
     filesPerProject()
     filesPerProjectPercentile()
@@ -458,6 +479,7 @@ if __name__ == '__main__':
     multipleGitIgnore()
     mostComplexPerLanguage()
     mostCommentedPerLanguage()
+    locPerLanguage()
 
 
 
