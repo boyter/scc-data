@@ -493,7 +493,7 @@ def locPerLanguage():
     ]
 
     for y in t:
-        x = '| %s | %s | %s |' % (y, res[y], res2[y])
+        x = '| %s | %s | %s |' % (y, "{:,}".format(res[y]), "{:,}".format(res2[y]))
         result.append(x)
 
     with open("./results/locPerLanguage_converted.txt", "w") as text_file:

@@ -310,6 +310,8 @@ func main() {
 	upperLowerOrMixedCase := map[string]int64{}          // Count if we have upper/lower or mixed case in the name
 	upperLowerOrMixedCaseIgnoreExt := map[string]int64{} // Count if we have upper/lower or mixed case in the name ignoring ext
 
+	averageFilesRepoPerLanguage := map[string]int64{} // Average number of files in a repository per language
+
 	//averagePathLengthPerLanguage := map[string]float64{} // Whats the average path length per language?
 
 	count := 0
@@ -417,6 +419,8 @@ func main() {
 
 			getUpperLowerOrMixedCase(summary, upperLowerOrMixedCase)
 			getUpperLowerOrMixedCaseIgnoreExt(summary, upperLowerOrMixedCaseIgnoreExt)
+
+			getAverageFilesRepoPerLanguage(summary, averageFilesRepoPerLanguage)
 		}
 	}
 
@@ -558,4 +562,7 @@ func main() {
 	_ = ioutil.WriteFile("./results/upperLowerOrMixedCase.json", []byte(v), 0600)
 	v, _ = json.Marshal(upperLowerOrMixedCaseIgnoreExt)
 	_ = ioutil.WriteFile("./results/upperLowerOrMixedCaseIgnoreExt.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(averageFilesRepoPerLanguage)
+	_ = ioutil.WriteFile("./results/averageFilesRepoPerLanguage.json", []byte(v), 0600)
 }

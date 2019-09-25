@@ -749,3 +749,14 @@ func getUpperLowerOrMixedCaseIgnoreExt(summary []LanguageSummary, x map[string]i
 		x["Lower"] = x["Lower"] + 1
 	}
 }
+
+
+func getAverageFilesRepoPerLanguage(summary []LanguageSummary, x map[string]int64) {
+	for _, y := range summary {
+		t := (x[y.Name] + int64(len(y.Files))) / 2
+		if t == 0 {
+			t = 1
+		}
+		x[y.Name] = t
+	}
+}
