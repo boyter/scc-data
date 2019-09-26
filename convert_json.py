@@ -247,8 +247,10 @@ def largestPerLanguage():
     for y in new:
         if 'bitbucket' in y[1]['Url']:
             link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        elif 'github' in y[1]['Url']:
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
         else:
-            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
 
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
@@ -289,8 +291,10 @@ def longestPerLanguage():
     for y in new:
         if 'bitbucket' in y[1]['Url']:
             link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        elif 'github' in y[1]['Url']:
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
         else:
-            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
 
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
@@ -330,8 +334,10 @@ def mostCommentedPerLanguage():
     for y in new:
         if 'bitbucket' in y[1]['Url']:
             link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        elif 'github' in y[1]['Url']:
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
         else:
-            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
 
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
@@ -438,9 +444,11 @@ def mostComplexPerLanguage():
     for y in new:
         if 'bitbucket' in y[1]['Url']:
             link = y[1]['Url'] + '/src/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        elif 'github' in y[1]['Url']:
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
         else:
-            link = y[1]['Url'] + '/' + '/'.join(y[1]['Location'].split('/')[3:])
-
+            link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
+        
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
