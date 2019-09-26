@@ -624,7 +624,7 @@ func getGitIgnore(summary []LanguageSummary, x map[int64]int64) {
 	for _, y := range summary {
 		// Count number of gitignore files for this repository
 		if y.Name == "gitignore" {
-			count++
+			count += int64(len(y.Files))
 		}
 	}
 

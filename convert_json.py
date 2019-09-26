@@ -7,6 +7,7 @@ possibly merge related sets together
 import json
 import os
 import operator
+import codecs
 
 
 def filesPerProject():
@@ -20,7 +21,7 @@ def filesPerProject():
     https://jsfiddle.net/uLw08scq/
     '''
     data = '[]'
-    with open('./results/filesPerProject.json', 'r') as myfile:
+    with codecs.open('./results/filesPerProject.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -38,7 +39,7 @@ def filesPerProject():
 
     new.sort(cmp)
 
-    with open("./results/filesPerProject_converted.json", "w") as text_file:
+    with codecs.open("./results/filesPerProject_converted.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(new, sort_keys=True))
 
 
@@ -81,7 +82,7 @@ function drawBasic() {
     }
     '''
     data = '[]'
-    with open('./results/filesPerProject.json', 'r') as myfile:
+    with codecs.open('./results/filesPerProject.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -160,7 +161,7 @@ function drawBasic() {
     for t in percent_log:
         other.append([t[0],t[1]])
 
-    with open("./results/filesPerProjectPercent_converted.json", "w") as text_file:
+    with codecs.open("./results/filesPerProjectPercent_converted.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(other, sort_keys=True))
 
 
@@ -175,7 +176,7 @@ def projectsPerLanguage():
     https://jsfiddle.net/15v3c2pk/
     '''
     data = '[]'
-    with open('./results/projectsPerLanguage.json', 'r') as myfile:
+    with codecs.open('./results/projectsPerLanguage.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -193,7 +194,7 @@ def projectsPerLanguage():
 
     new.sort(cmp)
 
-    with open("./results/projectsPerLanguage_converted.json", "w") as text_file:
+    with codecs.open("./results/projectsPerLanguage_converted.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(new))
 
 
@@ -202,7 +203,7 @@ def mostCommonFileNames():
     Converts output so we can see the nmost common filenames
     '''
     data = '[]'
-    with open('./results/fileNamesNoExtensionLowercaseCount.json', 'r') as myfile:
+    with codecs.open('./results/fileNamesNoExtensionLowercaseCount.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -210,7 +211,7 @@ def mostCommonFileNames():
     d = sorted(d.items(), key=operator.itemgetter(1), reverse=True)
     d = d[:51]
 
-    with open("./results/fileNamesNoExtensionLowercaseCount_converted.json", "w") as text_file:
+    with codecs.open("./results/fileNamesNoExtensionLowercaseCount_converted.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(d))
 
 
@@ -220,7 +221,7 @@ def largestPerLanguage():
     table for embedding
     '''
     data = '[]'
-    with open('./results/largestPerLanguage.json', 'r') as myfile:
+    with codecs.open('./results/largestPerLanguage.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -252,7 +253,7 @@ def largestPerLanguage():
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
-    with open("./results/largestPerLanguage_converted.txt", "w") as text_file:
+    with codecs.open("./results/largestPerLanguage_converted.txt", "w", "utf-8") as text_file:
         text_file.write('''\n'''.join(res))
 
 
@@ -262,7 +263,7 @@ def longestPerLanguage():
     table for embedding
     '''
     data = '[]'
-    with open('./results/longestPerLanguage.json', 'r') as myfile:
+    with codecs.open('./results/longestPerLanguage.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -294,7 +295,7 @@ def longestPerLanguage():
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
-    with open("./results/longestPerLanguage_converted.txt", "w") as text_file:
+    with codecs.open("./results/longestPerLanguage_converted.txt", "w", "utf-8") as text_file:
         text_file.write('''\n'''.join(res))
 
 def mostCommentedPerLanguage():
@@ -303,7 +304,7 @@ def mostCommentedPerLanguage():
     table for embedding
     '''
     data = '[]'
-    with open('./results/mostCommentedPerLanguage.json', 'r') as myfile:
+    with codecs.open('./results/mostCommentedPerLanguage.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -335,7 +336,7 @@ def mostCommentedPerLanguage():
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
-    with open("./results/mostCommentedPerLanguage_converted.txt", "w") as text_file:
+    with codecs.open("./results/mostCommentedPerLanguage_converted.txt", "w", "utf-8") as text_file:
         text_file.write('''\n'''.join(res))
 
 
@@ -350,7 +351,7 @@ def pureProjects():
     https://jsfiddle.net/jqt81ufs/
     '''
     data = '[]'
-    with open('./results/pureProjects.json', 'r') as myfile:
+    with codecs.open('./results/pureProjects.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -368,7 +369,7 @@ def pureProjects():
 
     new.sort(cmp)
 
-    with open("./results/pureProjects_converted.json", "w") as text_file:
+    with codecs.open("./results/pureProjects_converted.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(new, sort_keys=True))
 
 
@@ -383,7 +384,7 @@ def multipleGitIgnore():
     https://jsfiddle.net/jqt81ufs/1/
     '''
     data = '[]'
-    with open('./results/multipleGitIgnore.json', 'r') as myfile:
+    with codecs.open('./results/multipleGitIgnore.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -401,7 +402,7 @@ def multipleGitIgnore():
 
     new.sort(cmp)
 
-    with open("./results/multipleGitIgnore_converted.json", "w") as text_file:
+    with codecs.open("./results/multipleGitIgnore_converted.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(new, sort_keys=True))
 
 
@@ -411,7 +412,7 @@ def mostComplexPerLanguage():
     table for embedding
     '''
     data = '[]'
-    with open('./results/mostComplexPerLanguage.json', 'r') as myfile:
+    with codecs.open('./results/mostComplexPerLanguage.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -443,13 +444,13 @@ def mostComplexPerLanguage():
         x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
         res.append(x)
 
-    with open("./results/mostComplexPerLanguage_converted.txt", "w") as text_file:
+    with codecs.open("./results/mostComplexPerLanguage_converted.txt", "w", "utf-8") as text_file:
         text_file.write('''\n'''.join(res))
 
 
 def locPerLanguage():
     data = '[]'
-    with open('./results/lineDistributionPerLanguage.json', 'r') as myfile:
+    with codecs.open('./results/lineDistributionPerLanguage.json', 'r') as myfile:
         data = myfile.read()
 
     d = json.loads(data)
@@ -469,7 +470,7 @@ def locPerLanguage():
         else:
             res[langname] = (sumlines / totalfiles)
 
-    with open("./results/locPerLanguage.json", "w") as text_file:
+    with codecs.open("./results/locPerLanguage.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(res))
 
     # Produces the median
@@ -482,7 +483,7 @@ def locPerLanguage():
 
         res2[langname] = tmp[len(tmp) / 2]
 
-    with open("./results/locPerLanguageMedian.json", "w") as text_file:
+    with codecs.open("./results/locPerLanguageMedian.json", "w", "utf-8") as text_file:
         text_file.write(json.dumps(res2))
 
     t = []
@@ -499,19 +500,19 @@ def locPerLanguage():
         x = '| %s | %s | %s |' % (y, "{:,}".format(res[y]), "{:,}".format(res2[y]))
         result.append(x)
 
-    with open("./results/locPerLanguage_converted.txt", "w") as text_file:
+    with codecs.open("./results/locPerLanguage_converted.txt", "w", "utf-8") as text_file:
         text_file.write('''\n'''.join(result))
 
 
 def weightedCursing():
     data1 = '[]'
-    with open('./results/filesPerLanguage.json', 'r') as myfile:
+    with codecs.open('./results/filesPerLanguage.json', 'r') as myfile:
         data1 = myfile.read()
     d1 = json.loads(data1)
 
 
     data2 = '[]'
-    with open('./results/cursingByLanguage.json', 'r') as myfile:
+    with codecs.open('./results/cursingByLanguage.json', 'r') as myfile:
         data2 = myfile.read()
     d2 = json.loads(data2)
 
@@ -525,7 +526,7 @@ def weightedCursing():
         x = '| %s | %s%% |' % (y, float(d2[y]) / float(d1[y]) * 100)
         result.append(x)
 
-    with open("./results/cursingByLanguage_converted.txt", "w") as text_file:
+    with codecs.open("./results/cursingByLanguage_converted.txt", "w", "utf-8") as text_file:
         text_file.write('''\n'''.join(result))
 
 
