@@ -464,7 +464,10 @@ def locPerLanguage():
                 sumlines += int(y) * z
                 totalfiles += z
 
-        res[langname] = (sumlines / totalfiles)
+        if totalfiles == 0:
+            res[langname] = 0
+        else:
+            res[langname] = (sumlines / totalfiles)
 
     with open("./results/locPerLanguage.json", "w") as text_file:
         text_file.write(json.dumps(res))
@@ -500,6 +503,33 @@ def locPerLanguage():
         text_file.write('''\n'''.join(result))
 
 
+def weightedCursing():
+    data1 = '[]'
+    with open('./results/filesPerLanguage.json', 'r') as myfile:
+        data1 = myfile.read()
+    d1 = json.loads(data1)
+
+
+    data2 = '[]'
+    with open('./results/cursingByLanguage.json', 'r') as myfile:
+        data2 = myfile.read()
+    d2 = json.loads(data2)
+
+
+    result = [
+        '| language | percent of files |',
+        '| -------- | ---------------- |',
+    ]
+
+    for y in d2:
+        x = '| %s | %s%% |' % (y, float(d2[y]) / float(d1[y]) * 100)
+        result.append(x)
+
+    with open("./results/cursingByLanguage_converted.txt", "w") as text_file:
+        text_file.write('''\n'''.join(result))
+
+
+
 if __name__ == '__main__':
     filesPerProject()
     filesPerProjectPercentile()
@@ -512,6 +542,7 @@ if __name__ == '__main__':
     mostComplexPerLanguage()
     mostCommentedPerLanguage()
     locPerLanguage()
+    weightedCursing()
 
 
 
