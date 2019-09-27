@@ -296,7 +296,7 @@ def longestPerLanguage():
         else:
             link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
 
-        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
+        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], "{:,}".format(y[1]['Value']))
         res.append(x)
 
     with codecs.open("./results/longestPerLanguage_converted.txt", "w", "utf-8") as text_file:
@@ -339,7 +339,7 @@ def mostCommentedPerLanguage():
         else:
             link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
 
-        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
+        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], "{:,}".format(y[1]['Value']))
         res.append(x)
 
     with codecs.open("./results/mostCommentedPerLanguage_converted.txt", "w", "utf-8") as text_file:
@@ -438,7 +438,7 @@ def mostComplexPerLanguage():
 
     res = [
         '| language | filename | complexity |',
-        '| -------- | -------- | ----- |',
+        '| -------- | -------- | ---------- |',
     ]
 
     for y in new:
@@ -449,7 +449,7 @@ def mostComplexPerLanguage():
         else:
             link = y[1]['Url'] + '/blob/master/' + '/'.join(y[1]['Location'].split('/')[3:])
         
-        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], y[1]['Value'])
+        x = '| %s | <a href="%s">%s</a> | %s |' % (y[0], link, y[1]['Filename'], "{:,}".format(y[1]['Value']))
         res.append(x)
 
     with codecs.open("./results/mostComplexPerLanguage_converted.txt", "w", "utf-8") as text_file:
