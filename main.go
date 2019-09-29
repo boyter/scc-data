@@ -302,7 +302,7 @@ func main() {
 	cursingByWord := map[string]int64{}     // Cursing names by most common curse word
 
 	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
-	//multipleGitIgnoreProjects := map[string]int64{} // Projects with > 100 gitignore files
+	multipleGitIgnoreProjects := map[string]int64{} // Projects with > 100 gitignore files
 
 	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
 	hasTypeScriptExclusively := map[string]int64{}     // Count of projects with just typescript
@@ -311,8 +311,9 @@ func main() {
 	upperLowerOrMixedCaseIgnoreExt := map[string]int64{} // Count if we have upper/lower or mixed case in the name ignoring ext
 
 	averageFilesRepoPerLanguage := map[string]int64{} // Average number of files in a repository per language
+	averageComplexityPerLanguage := map[string]int64{} // Average complexity per language
 
-	//averagePathLengthPerLanguage := map[string]float64{} // Whats the average path length per language?
+	averagePathLengthPerLanguage := map[string]float64{} // Whats the average path length per language?
 
 	count := 0
 	for file := range queue {
@@ -349,6 +350,8 @@ func main() {
 			fileCount += int64(len(summary))
 			byteCount += getByteCount(summary)
 
+			/*
+			Removed because we don't need them anymore
 			getLineDistributionPerProject(summary, lineDistributionPerProject)
 			getLineDistributionPerFile(summary, lineDistributionPerFile)
 			getLineDistributionPerLanguage(summary, lineDistributionPerLanguage)
@@ -406,6 +409,7 @@ func main() {
 			mostCommented = getMostCommented(summary, file.Filename, mostCommented)
 			getMostCommentedPerLanguage(summary, file.Filename, fileNameToLink(file.Name), mostCommentedPerLanguage)
 
+
 			getYmlOrYaml(summary, ymlOrYaml)
 			getPurity(summary, pureProjects)
 			getPurityByLanguage(summary, pureProjectsByLanguage)
@@ -416,11 +420,16 @@ func main() {
 
 			getHasCoffeeScriptAndTypeScript(summary, hasCoffeeScriptAndTypescript)
 			getHasTypeScriptExclusively(summary, hasTypeScriptExclusively)
-
 			getUpperLowerOrMixedCase(summary, upperLowerOrMixedCase)
 			getUpperLowerOrMixedCaseIgnoreExt(summary, upperLowerOrMixedCaseIgnoreExt)
-
 			getAverageFilesRepoPerLanguage(summary, averageFilesRepoPerLanguage)
+			*/
+
+			getAverageComplexityPerLanguage(summary, averageComplexityPerLanguage)
+			getMultipleGitIgnoreProjects(summary, fileNameToLink(file.Name), multipleGitIgnoreProjects)
+
+			getAveragePathLengthPerLanguage(summary, averagePathLengthPerLanguage)
+
 		}
 	}
 
@@ -551,6 +560,8 @@ func main() {
 
 	v, _ = json.Marshal(multipleGitIgnore)
 	_ = ioutil.WriteFile("./results/multipleGitIgnore.json", []byte(v), 0600)
+	v, _ = json.Marshal(multipleGitIgnoreProjects)
+	_ = ioutil.WriteFile("./results/multipleGitIgnoreProjects.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(hasCoffeeScriptAndTypescript)
 	_ = ioutil.WriteFile("./results/hasCoffeeScriptAndTypescript.json", []byte(v), 0600)
@@ -565,4 +576,10 @@ func main() {
 
 	v, _ = json.Marshal(averageFilesRepoPerLanguage)
 	_ = ioutil.WriteFile("./results/averageFilesRepoPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(averageComplexityPerLanguage)
+	_ = ioutil.WriteFile("./results/averageComplexityPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(averagePathLengthPerLanguage)
+	_ = ioutil.WriteFile("./results/averagePathLengthPerLanguage.json", []byte(v), 0600)
 }

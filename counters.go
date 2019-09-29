@@ -631,6 +631,28 @@ func getGitIgnore(summary []LanguageSummary, x map[int64]int64) {
 	x[count] = x[count] + 1
 }
 
+func getMultipleGitIgnoreProjects(summary []LanguageSummary, filename string, x map[string]int64) {
+	for _, y := range summary {
+		if y.Name == "gitignore" {
+			// Some have over 1000 gitignore files...
+			if len(y.Files) > 1000 {
+				x[filename] = int64(len(y.Files))
+			}
+		}
+	}
+}
+
+func getAveragePathLengthPerLanguage(summary []LanguageSummary, x map[string]float64) {
+	// For each language
+	for _, lan := range summary {
+		// For each file
+		for _, file := range lan.Files {
+			t := len(strings.Split( file.Location, "/"))
+			x[lan.Name] = (x[lan.Name] + float64(t - 2)) / 2
+		}
+	}
+}
+
 func getHasCoffeeScriptAndTypeScript(summary []LanguageSummary, x map[string]int64) {
 	hasCoffeeScript := false
 	hasTypeScript := false
@@ -758,5 +780,14 @@ func getAverageFilesRepoPerLanguage(summary []LanguageSummary, x map[string]int6
 			t = 1
 		}
 		x[y.Name] = t
+	}
+}
+
+func getAverageComplexityPerLanguage(summary []LanguageSummary, zee map[string]int64) {
+	for _, y := range summary {
+		for _, x := range y.Files {
+			t := (zee[y.Name] + x.Complexity) / 2
+			zee[y.Name] = t
+		}
 	}
 }
