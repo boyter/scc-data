@@ -301,7 +301,8 @@ func main() {
 	cursingByLanguage := map[string]int64{} // Cursing names by language
 	cursingByWord := map[string]int64{}     // Cursing names by most common curse word
 
-	multipleGitIgnore := map[int64]int64{} // See how many projects use none, single or multiple gitignore files
+	multipleGitIgnore := map[int64]int64{}          // See how many projects use none, single or multiple gitignore files
+	multipleIgnore := map[int64]int64{}             // See how many projects use none, single or multiple ignore files
 	multipleGitIgnoreProjects := map[string]int64{} // Projects with > 100 gitignore files
 
 	hasCoffeeScriptAndTypescript := map[string]int64{} // Count of projects with both languages
@@ -310,8 +311,9 @@ func main() {
 	upperLowerOrMixedCase := map[string]int64{}          // Count if we have upper/lower or mixed case in the name
 	upperLowerOrMixedCaseIgnoreExt := map[string]int64{} // Count if we have upper/lower or mixed case in the name ignoring ext
 
-	averageFilesRepoPerLanguage := map[string]int64{} // Average number of files in a repository per language
-	averageComplexityPerLanguage := map[string]int64{} // Average complexity per language
+	averageFilesRepoPerLanguage := map[string]float64{}  // Average number of files in a repository per language
+	averageComplexityPerLanguage := map[string]float64{} // Average complexity per language
+	averageCommmentsPerLanguage := map[string]float64{}  // Average comments per language
 
 	averagePathLengthPerLanguage := map[string]float64{} // Whats the average path length per language?
 
@@ -351,84 +353,88 @@ func main() {
 			byteCount += getByteCount(summary)
 
 			/*
-			Removed because we don't need them anymore
-			getLineDistributionPerProject(summary, lineDistributionPerProject)
-			getLineDistributionPerFile(summary, lineDistributionPerFile)
-			getLineDistributionPerLanguage(summary, lineDistributionPerLanguage)
+				Removed because we don't need them anymore
+				getLineDistributionPerProject(summary, lineDistributionPerProject)
+				getLineDistributionPerFile(summary, lineDistributionPerFile)
+				getLineDistributionPerLanguage(summary, lineDistributionPerLanguage)
 
-			getCodeDistributionPerProject(summary, codeDistributionPerProject)
-			getCodeDistributionPerFile(summary, codeDistributionPerFile)
-			getCodeDistributionPerLanguage(summary, codeDistributionPerLanguage)
+				getCodeDistributionPerProject(summary, codeDistributionPerProject)
+				getCodeDistributionPerFile(summary, codeDistributionPerFile)
+				getCodeDistributionPerLanguage(summary, codeDistributionPerLanguage)
 
-			getCommentDistributionPerProject(summary, commentDistributionPerProject)
-			getCommentDistributionPerFile(summary, commentDistributionPerFile)
-			getCommentDistributionPerLanguage(summary, commentDistributionPerLanguage)
+				getCommentDistributionPerProject(summary, commentDistributionPerProject)
+				getCommentDistributionPerFile(summary, commentDistributionPerFile)
+				getCommentDistributionPerLanguage(summary, commentDistributionPerLanguage)
 
-			getBlankDistributionPerProject(summary, blankDistributionPerProject)
-			getBlankDistributionPerFile(summary, blankDistributionPerFile)
-			getBlankDistributionPerLanguage(summary, blankDistributionPerLanguage)
+				getBlankDistributionPerProject(summary, blankDistributionPerProject)
+				getBlankDistributionPerFile(summary, blankDistributionPerFile)
+				getBlankDistributionPerLanguage(summary, blankDistributionPerLanguage)
 
-			getComplexityDistributionPerProject(summary, complexityDistributionPerProject)
-			getComplexityDistributionPerFile(summary, complexityDistributionPerFile)
-			getComplexityDistributionPerLanguage(summary, complexityDistributionPerLanguage)
+				getComplexityDistributionPerProject(summary, complexityDistributionPerProject)
+				getComplexityDistributionPerFile(summary, complexityDistributionPerFile)
+				getComplexityDistributionPerLanguage(summary, complexityDistributionPerLanguage)
 
-			getFilesPerProject(summary, filesPerProject)
-			getLicencePerProject(summary, hasLicenceCount)
+				getFilesPerProject(summary, filesPerProject)
+				getLicencePerProject(summary, hasLicenceCount)
 
-			getComplexityPerLanguage(summary, complexityPerLanguage)
-			getFilesPerLanguage(summary, filesPerLanguage)
-			getProjectsPerLanguage(summary, projectsPerLanguage)
+				getComplexityPerLanguage(summary, complexityPerLanguage)
+				getFilesPerLanguage(summary, filesPerLanguage)
+				getProjectsPerLanguage(summary, projectsPerLanguage)
 
-			getCommentsPerLanguage(summary, commentsPerLanguage)
+				getCommentsPerLanguage(summary, commentsPerLanguage)
 
-			// NB this might be too large and need to purge certain names over time
-			// The first two are also useless so ignore them
-			//getFileNamesCount(summary, fileNamesCount)
-			//getFileNamesNoExtensionCount(summary, fileNamesNoExtensionCount)
-			getFileNamesNoExtensionLowercaseCount(summary, fileNamesNoExtensionLowercaseCount)
+				// NB this might be too large and need to purge certain names over time
+				// The first two are also useless so ignore them
+				//getFileNamesCount(summary, fileNamesCount)
+				//getFileNamesNoExtensionCount(summary, fileNamesNoExtensionCount)
+				getFileNamesNoExtensionLowercaseCount(summary, fileNamesNoExtensionLowercaseCount)
 
-			// Purge counts as mentioned above to avoid blowing memory budget
-			if count%100 == 0 {
-				//fileNamesCount = cullCountMap(fileNamesCount)
-				//fileNamesNoExtensionCount = cullCountMap(fileNamesNoExtensionCount)
-				fileNamesNoExtensionLowercaseCount = cullCountMap(fileNamesNoExtensionLowercaseCount)
-			}
+				// Purge counts as mentioned above to avoid blowing memory budget
+				if count%100 == 0 {
+					//fileNamesCount = cullCountMap(fileNamesCount)
+					//fileNamesNoExtensionCount = cullCountMap(fileNamesNoExtensionCount)
+					fileNamesNoExtensionLowercaseCount = cullCountMap(fileNamesNoExtensionLowercaseCount)
+				}
 
-			mostComplex = getMostComplex(summary, file.Filename, mostComplex)
-			getMostComplexPerLanguage(summary, file.Filename, fileNameToLink(file.Name), mostComplexPerLanguage)
+				mostComplex = getMostComplex(summary, file.Filename, mostComplex)
+				getMostComplexPerLanguage(summary, file.Filename, fileNameToLink(file.Name), mostComplexPerLanguage)
 
-			// Turns out to not be useful in practice
-			//mostComplexWeighted = getMostComplexWeighted(summary, file.Filename, mostComplexWeighted)
-			//getMostComplexWeightedPerLanguage(summary, file.Filename, mostComplexWeightedPerLanguage)
+				// Turns out to not be useful in practice
+				//mostComplexWeighted = getMostComplexWeighted(summary, file.Filename, mostComplexWeighted)
+				//getMostComplexWeightedPerLanguage(summary, file.Filename, mostComplexWeightedPerLanguage)
 
-			largest = getLargest(summary, file.Filename, largest)
-			getLargestPerLanguage(summary, file.Filename, fileNameToLink(file.Name), largestPerLanguage)
-			longest = getMostLines(summary, file.Filename, longest)
-			getMostLinesPerLanguage(summary, file.Filename, fileNameToLink(file.Name), longestPerLanguage)
+				largest = getLargest(summary, file.Filename, largest)
+				getLargestPerLanguage(summary, file.Filename, fileNameToLink(file.Name), largestPerLanguage)
+				longest = getMostLines(summary, file.Filename, longest)
+				getMostLinesPerLanguage(summary, file.Filename, fileNameToLink(file.Name), longestPerLanguage)
 
-			mostCommented = getMostCommented(summary, file.Filename, mostCommented)
-			getMostCommentedPerLanguage(summary, file.Filename, fileNameToLink(file.Name), mostCommentedPerLanguage)
+				mostCommented = getMostCommented(summary, file.Filename, mostCommented)
+				getMostCommentedPerLanguage(summary, file.Filename, fileNameToLink(file.Name), mostCommentedPerLanguage)
 
 
-			getYmlOrYaml(summary, ymlOrYaml)
-			getPurity(summary, pureProjects)
-			getPurityByLanguage(summary, pureProjectsByLanguage)
-			getFactoryCount(summary, javaFactory)
-			getCursingByLanguage(summary, cursingByLanguage)
-			getCursingByWord(summary, cursingByWord)
-			getGitIgnore(summary, multipleGitIgnore)
+				getYmlOrYaml(summary, ymlOrYaml)
+				getPurity(summary, pureProjects)
+				getPurityByLanguage(summary, pureProjectsByLanguage)
+				getFactoryCount(summary, javaFactory)
+				getCursingByLanguage(summary, cursingByLanguage)
+				getCursingByWord(summary, cursingByWord)
+				getGitIgnore(summary, multipleGitIgnore)
 
-			getHasCoffeeScriptAndTypeScript(summary, hasCoffeeScriptAndTypescript)
-			getHasTypeScriptExclusively(summary, hasTypeScriptExclusively)
-			getUpperLowerOrMixedCase(summary, upperLowerOrMixedCase)
-			getUpperLowerOrMixedCaseIgnoreExt(summary, upperLowerOrMixedCaseIgnoreExt)
-			getAverageFilesRepoPerLanguage(summary, averageFilesRepoPerLanguage)
+				getHasCoffeeScriptAndTypeScript(summary, hasCoffeeScriptAndTypescript)
+				getHasTypeScriptExclusively(summary, hasTypeScriptExclusively)
+				getUpperLowerOrMixedCase(summary, upperLowerOrMixedCase)
+				getUpperLowerOrMixedCaseIgnoreExt(summary, upperLowerOrMixedCaseIgnoreExt)
+
 			*/
 
+			getGitIgnore(summary, multipleGitIgnore)
+			getIgnore(summary, multipleIgnore)
+			getAverageFilesRepoPerLanguage(summary, averageFilesRepoPerLanguage)
 			getAverageComplexityPerLanguage(summary, averageComplexityPerLanguage)
-			getMultipleGitIgnoreProjects(summary, fileNameToLink(file.Name), multipleGitIgnoreProjects)
+			getAverageCommmentsPerLanguage(summary, averageCommmentsPerLanguage)
 
-			getAveragePathLengthPerLanguage(summary, averagePathLengthPerLanguage)
+			//getMultipleGitIgnoreProjects(summary, fileNameToLink(file.Name), multipleGitIgnoreProjects)
+			//getAveragePathLengthPerLanguage(summary, averagePathLengthPerLanguage)
 
 		}
 	}
@@ -560,6 +566,8 @@ func main() {
 
 	v, _ = json.Marshal(multipleGitIgnore)
 	_ = ioutil.WriteFile("./results/multipleGitIgnore.json", []byte(v), 0600)
+	v, _ = json.Marshal(multipleIgnore)
+	_ = ioutil.WriteFile("./results/multipleIgnore.json", []byte(v), 0600)
 	v, _ = json.Marshal(multipleGitIgnoreProjects)
 	_ = ioutil.WriteFile("./results/multipleGitIgnoreProjects.json", []byte(v), 0600)
 
@@ -579,6 +587,9 @@ func main() {
 
 	v, _ = json.Marshal(averageComplexityPerLanguage)
 	_ = ioutil.WriteFile("./results/averageComplexityPerLanguage.json", []byte(v), 0600)
+
+	v, _ = json.Marshal(averageCommmentsPerLanguage)
+	_ = ioutil.WriteFile("./results/averageCommmentsPerLanguage.json", []byte(v), 0600)
 
 	v, _ = json.Marshal(averagePathLengthPerLanguage)
 	_ = ioutil.WriteFile("./results/averagePathLengthPerLanguage.json", []byte(v), 0600)

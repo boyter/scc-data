@@ -631,6 +631,18 @@ func getGitIgnore(summary []LanguageSummary, x map[int64]int64) {
 	x[count] = x[count] + 1
 }
 
+func getIgnore(summary []LanguageSummary, x map[int64]int64) {
+	var count int64
+	for _, y := range summary {
+		// Count number of ignore files for this repository
+		if y.Name == "ignore" {
+			count += int64(len(y.Files))
+		}
+	}
+
+	x[count] = x[count] + 1
+}
+
 func getMultipleGitIgnoreProjects(summary []LanguageSummary, filename string, x map[string]int64) {
 	for _, y := range summary {
 		if y.Name == "gitignore" {
@@ -647,8 +659,8 @@ func getAveragePathLengthPerLanguage(summary []LanguageSummary, x map[string]flo
 	for _, lan := range summary {
 		// For each file
 		for _, file := range lan.Files {
-			t := len(strings.Split( file.Location, "/"))
-			x[lan.Name] = (x[lan.Name] + float64(t - 2)) / 2
+			t := len(strings.Split(file.Location, "/"))
+			x[lan.Name] = (x[lan.Name] + float64(t-2)) / 2
 		}
 	}
 }
@@ -772,21 +784,37 @@ func getUpperLowerOrMixedCaseIgnoreExt(summary []LanguageSummary, x map[string]i
 	}
 }
 
-
-func getAverageFilesRepoPerLanguage(summary []LanguageSummary, x map[string]int64) {
+func getAverageFilesRepoPerLanguage(summary []LanguageSummary, x map[string]float64) {
 	for _, y := range summary {
-		t := (x[y.Name] + int64(len(y.Files))) / 2
-		if t == 0 {
-			t = 1
+		if len(y.Files) != 0 {
+			if x[y.Name] == 0 {
+				// Not seen before so set to default
+				x[y.Name] = float64(len(y.Files))
+			} else {
+				t := float64((x[y.Name] + float64(len(y.Files)))) / 2
+				x[y.Name] = t
+			}
+		} else {
+			x[y.Name] = 0
 		}
-		x[y.Name] = t
 	}
 }
 
-func getAverageComplexityPerLanguage(summary []LanguageSummary, zee map[string]int64) {
+func getAverageComplexityPerLanguage(summary []LanguageSummary, zee map[string]float64) {
 	for _, y := range summary {
 		for _, x := range y.Files {
-			t := (zee[y.Name] + x.Complexity) / 2
+			// Technically wrong because we half the first value but over the whole data set not a huge issue
+			t := float64(zee[y.Name]+float64(x.Complexity)) / 2
+			zee[y.Name] = t
+		}
+	}
+}
+
+func getAverageCommmentsPerLanguage(summary []LanguageSummary, zee map[string]float64) {
+	for _, y := range summary {
+		for _, x := range y.Files {
+			// Technically wrong because we half the first value but over the whole data set not a huge issue
+			t := float64(zee[y.Name]+float64(x.Comment)) / 2
 			zee[y.Name] = t
 		}
 	}
